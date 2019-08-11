@@ -23,6 +23,7 @@ export default class AppUpdater {
   }
 }
 
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 let mainWindow = null;
 
 if (process.env.NODE_ENV === 'production') {
@@ -69,8 +70,8 @@ app.on('ready', async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728
+    width: 1400,
+    height: 800
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
