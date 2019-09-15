@@ -5,6 +5,24 @@ import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.scss';
 
+const sqlite3 = require('sqlite3').verbose();
+
+const db = new sqlite3.Database('./db/ji_db.db', err => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log('Connected to the file SQlite database.');
+});
+
+db.serialize(() => {
+  db.each('SELECT * FROM settings', (err, row) => {
+    console.log(err);
+    console.log(`${row.val}: ${row.val}`);
+  });
+});
+
+db.close();
+
 const store = configureStore();
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
