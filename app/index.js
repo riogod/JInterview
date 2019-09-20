@@ -5,23 +5,57 @@ import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.scss';
 
-const sqlite3 = require('sqlite3').verbose();
+// const db = require('./db/config/database');
+// const AppSettings = require('./db/models/settings');
 
-const db = new sqlite3.Database('./db/ji_db.db', err => {
-  if (err) {
-    return console.error(err.message);
-  }
-  console.log('Connected to the file SQlite database.');
-});
+// db.authenticate()
+//   .then(() => console.log('DB Connected...'))
+//   .catch(err => console.log(`Error: ${err}`));
 
-db.serialize(() => {
-  db.each('SELECT * FROM settings', (err, row) => {
-    console.log(err);
-    console.log(`${row.val}: ${row.val}`);
-  });
-});
+// AppSettings.findAll()
+//   .then(settings => {
+//     console.log(settings);
+//     return true;
+//   })
+//   .catch(err => console.log(`Something wrong: ${err}`));
 
-db.close();
+// AppSettings.getValue('QUESTION_PER_QUIZSESSION')
+//   .then(settingValue => {
+//     console.log(`Returned Value: ${settingValue}`);
+//     return true;
+//   })
+//   .catch(err => console.log(`Something wrong: ${err}`));
+
+// console.log(`Returned value:${AppSettings.getValue('QUESTION_PER_QUIZSESSION').then( settingVal => console.log(settingVal))}`);
+
+/*
+AppSettings.findOne({
+  attributes: ['var', 'val'],
+  where: { var: 'QUESTION_PER_QUIZSESSION' }
+})
+  .then(foundValue => {
+    console.log(`Value Eah!:${foundValue.getValue}`);
+
+    return foundValue.dataValues.val;
+  })
+  .catch(err => console.log(`Something wrong: ${err}`));
+
+*/
+
+// const AppSettingsService = require('./db/service/settings');
+
+// console.log(
+//   `WOOOOO:${AppSettingsService.getSettingsValue('QUESTION_PER_QUIZSESSION').then(val => val)}`
+// );
+
+// const fta = AppSettingsService.getSettingsValue('QUESTION_PER_QUIZSESSION')
+//   .then( result => {
+//     console.log(`WOOOOHOOO:${result}`);
+//     return true;
+//   })
+//   .catch(err => console.log(`Something wrong: ${err}`));
+//
+// console.log(`FTA:${fta}`);
 
 const store = configureStore();
 
