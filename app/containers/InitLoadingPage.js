@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
 import * as MainActions from '../actions/main';
-import Settings from '../components/Settings';
+import InitLoading from '../components/InitLoading';
 
 function mapStateToProps(state) {
   return {
@@ -21,4 +21,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Settings);
+)(InitLoading);
