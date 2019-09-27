@@ -6,10 +6,10 @@ import { bindActionCreators } from 'redux';
 import * as MainActions from '../actions/main';
 import Settings from '../components/Settings';
 
-function mapStateToProps() {
-  console.log('settings');
+function mapStateToProps(state) {
   return {
-    currentPath: 'settings'
+    currentPath: state.main.module,
+    appSettings: state.main.settings
   };
 }
 

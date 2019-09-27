@@ -2,31 +2,58 @@
 import React, { Component } from 'react';
 import { Row, Col, Slider, Switch } from 'antd';
 import Header from './header/Header';
+import DbServiceSettings from '../db/service/settings';
 
 type Props = {
-  currentPath: string
+  setCurrentPath: any,
+  setAppSettings: Function,
+  appSettings: Object
 };
 
 export default class Settings extends Component<Props> {
   props: Props;
 
-  render() {
-    const { currentPath } = this.props;
+  componentDidMount(): void {
+    const { setCurrentPath } = this.props;
+    setCurrentPath('module-settings');
 
+    const dbSettings = new DbServiceSettings();
+
+    dbSettings
+      .getSettingsValue('QUESTION_PER_QUIZSESSION')
+      .then(res => {
+        console.log(`!!!------->${res}`);
+        return res;
+      })
+      .catch(err => console.log(`Something wrong: ${err}`));
+  }
+
+  render() {
+    const { setAppSettings } = this.props;
+
+    const { appSettings } = this.props;
+    const { QUESTION_PER_QUIZSESSION, ALLOW_SUBDIR } = appSettings;
+    console.log('AppSettings:', this.props);
     return (
       <React.Fragment>
-        <Header menu={currentPath} />
+        <Header menu="module-settings" />
         <div className="settings-container">
           <Row>
-            <Col span={12}>Questions in quiz block:</Col>
+            <Col span={12}>Сколько вопросов будет задано в блоке интервью:</Col>
             <Col span={12}>
-              <Slider defaultValue={30} tooltipVisible />
+              <Slider
+                defaultValue={QUESTION_PER_QUIZSESSION}
+                onAfterChange={val => {
+                  setAppSettings('QUESTION_PER_QUIZSESSION', val);
+                }}
+                tooltipVisible
+              />
             </Col>
           </Row>
           <Row>
-            <Col span={12}>Allow subdir in quiz:</Col>
+            <Col span={12}>Разрешить включать вопросы из поддиректорий:</Col>
             <Col span={12}>
-              <Switch defaultChecked />
+              <Switch defaultChecked={ALLOW_SUBDIR} />
             </Col>
           </Row>
         </div>

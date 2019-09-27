@@ -43,4 +43,17 @@ export default class DbServiceSettings {
 
     return resultValue;
   };
+
+  setSettingsValue = async (settingsVar, settingVal) => {
+    console.log('UPDATE:', settingsVar, settingVal);
+
+    AppSettings.update({ val: settingVal }, { where: { var: settingsVar } })
+      .then(result => {
+        console.log('updated successfully!', result);
+        return true;
+      })
+      .catch(err => console.error(`Something wrong: ${err}`));
+
+    return true;
+  };
 }

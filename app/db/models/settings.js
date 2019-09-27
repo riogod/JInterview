@@ -6,6 +6,11 @@ const db = require('../config/database');
 const AppSettings = db.define(
   'settings',
   {
+    id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     var: Sequelize.STRING,
     val: Sequelize.STRING,
     descr: Sequelize.STRING

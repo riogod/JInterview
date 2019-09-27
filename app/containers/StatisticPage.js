@@ -5,10 +5,9 @@ import { bindActionCreators } from 'redux';
 import * as MainActions from '../actions/main';
 import Stat from '../components/Stat';
 
-function mapStateToProps() {
-  console.log('stat!!!!');
+function mapStateToProps(state) {
   return {
-    currentPath: 'stat'
+    currentPath: state.main.module
   };
 }
 

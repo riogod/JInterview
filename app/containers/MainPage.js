@@ -5,10 +5,9 @@ import { bindActionCreators } from 'redux';
 import Main from '../components/Main';
 import * as MainActions from '../actions/main';
 
-function mapStateToProps() {
-  console.log('main!!!!');
+function mapStateToProps(state) {
   return {
-    currentPath: 'main'
+    currentPath: state.main
   };
 }
 

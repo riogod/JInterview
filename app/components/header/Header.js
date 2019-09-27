@@ -14,7 +14,7 @@ export default class Header extends Component<Props, State> {
   state: State;
 
   render() {
-    console.log(this.props);
+    console.log('HEADER:', this.props);
     const { menu } = this.props;
     return (
       <React.Fragment>
@@ -34,7 +34,7 @@ export default class Header extends Component<Props, State> {
             </Link>
             <Link
               className={
-                menu === 'stat' ? styles.menuActiveItem : styles.menuItem
+                menu === 'module-stat' ? styles.menuActiveItem : styles.menuItem
               }
               data-tid="menuItem2"
               to={routes.STAT}
@@ -43,7 +43,9 @@ export default class Header extends Component<Props, State> {
             </Link>
             <Link
               className={
-                menu === 'settings' ? styles.menuActiveItem : styles.menuItem
+                menu === 'module-settings'
+                  ? styles.menuActiveItem
+                  : styles.menuItem
               }
               data-tid="menuItem3"
               to={routes.SETTINGS}
