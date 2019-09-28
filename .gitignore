@@ -48,4 +48,3 @@ main.js.map
 
 .idea
 npm-debug.log.*
-app/db/models/categories.js
