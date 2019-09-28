@@ -7,6 +7,8 @@ import type { Action } from './types';
 
 let initStoreMain = {
   loadedInit: false,
+  currentCategory: 0,
+  searchPhrase: '',
   settings: {
     QUESTION_PER_QUIZSESSION: 0,
     ALLOW_SUBDIR: false

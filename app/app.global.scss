@@ -5,6 +5,9 @@
 @import '~@fortawesome/fontawesome-free/css/all.css';
 @import '~antd/dist/antd.css';
 
+$scrollbar-width: 10px;
+$chat-thread-bgd-color: rgba(25, 147, 147, 0.2);
+
 body {
   color: white;
   height: 100vh;
@@ -16,6 +19,7 @@ body {
   );
   font-family: Arial, Helvetica, Helvetica Neue, serif;
   overflow-y: hidden;
+  overflow-x: hidden;
   padding: 0;
   margin: 0;
 }
@@ -74,4 +78,41 @@ a:hover {
 
 .loading-spinner {
   width: 100%;
+}
+
+.catalog-container {
+  height: calc(100% - 120px);
+  overflow-y: auto;
+  margin: 10px 15px 0 15px;
+}
+
+::-webkit-scrollbar {
+  width: $scrollbar-width;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: $scrollbar-width;
+  background-color: rgba(25, 147, 147, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: $scrollbar-width;
+  background-color: $chat-thread-bgd-color;
+}
+.catalog-itemlist {
+  grid-area: box-content;
+  align-items: center;
+  align-content: start;
+  display: grid;
+  grid-gap: 10px;
+  padding: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+.catalog-item {
+  justify-self: center;
+  background-color: #232c39;
+  width: 330px;
+  height: 150px;
+  margin: 8px;
 }

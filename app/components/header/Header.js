@@ -14,7 +14,6 @@ export default class Header extends Component<Props, State> {
   state: State;
 
   render() {
-    console.log('HEADER:', this.props);
     const { menu } = this.props;
     return (
       <React.Fragment>

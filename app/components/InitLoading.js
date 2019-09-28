@@ -35,8 +35,6 @@ export default class InitLoading extends Component<Props> {
   }
 
   render() {
-    console.log('AppSettings:', this.props);
-
     return (
       <React.Fragment>
         <Spin size="large" className="loading-spinner" />

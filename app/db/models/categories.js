@@ -17,12 +17,7 @@ const appCategories = db.define(
     sort_order: Sequelize.INTEGER
   },
   {
-    timestamps: false,
-    getterMethods: {
-      getValue() {
-        return this.getDataValue('category_name');
-      }
-    }
+    timestamps: false
   }
 );
 

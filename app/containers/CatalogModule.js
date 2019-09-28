@@ -1,15 +1,15 @@
 // @flow
 // import React from 'react';
 import { connect } from 'react-redux';
+
 import { bindActionCreators } from 'redux';
-import Main from '../components/Main';
 import * as MainActions from '../actions/main';
+import Catalog from '../components/Catalog';
 
 function mapStateToProps(state) {
   return {
-    currentPath: state.main.module,
-    loadedInit: state.main.loadedInit,
-    appSettings: state.main.settings
+    currentCategory: state.main.currentCategory,
+    searchPhrase: state.main.searchPhrase
   };
 }
 
@@ -20,4 +20,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Main);
+)(Catalog);
