@@ -48,18 +48,6 @@ li {
   list-style: none;
 }
 
-a {
-  color: white;
-  opacity: 0.75;
-  text-decoration: none;
-}
-
-a:hover {
-  opacity: 1;
-  text-decoration: none;
-  cursor: pointer;
-}
-
 .settings-container {
   box-sizing: border-box;
   margin-top: 30px;
@@ -100,19 +88,40 @@ a:hover {
   background-color: $chat-thread-bgd-color;
 }
 .catalog-itemlist {
-  grid-area: box-content;
-  align-items: center;
-  align-content: start;
   display: grid;
-  grid-gap: 10px;
-  padding: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-auto-columns: max-content;
+  grid-gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 }
 
 .catalog-item {
-  justify-self: center;
-  background-color: #232c39;
-  width: 330px;
-  height: 150px;
-  margin: 8px;
+  display: flex;
+  background: #fff;
+  border-radius: 2px;
+  color: #232c39;
+  height: 130px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+
+  & > div:first-child {
+    width: calc(100% - 50px);
+    background-color: aquamarine;
+  }
+
+  & > div:last-child {
+    width: 50px;
+    background-color: antiquewhite;
+  }
+}
+
+.catalog-itemadd {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  color: #fff;
+  height: 130px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 }

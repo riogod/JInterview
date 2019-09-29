@@ -1,5 +1,5 @@
 // @flow
-import { SET_CURRENT_PATH, SET_LOADED_INIT, QUESTION_PER_QUIZSESSION, ALLOW_SUBDIR } from '../actions/main';
+import { SET_CURRENT_PATH, SET_LOADED_INIT, QUESTION_PER_QUIZSESSION, ALLOW_SUBDIR, NEED_TO_UPDATE_CATALOG, SET_CURRENT_CATEGORY } from '../actions/main';
 import type { Action } from './types';
 
 
@@ -9,6 +9,7 @@ let initStoreMain = {
   loadedInit: false,
   currentCategory: 0,
   searchPhrase: '',
+  needToUpdateCatalog: false,
   settings: {
     QUESTION_PER_QUIZSESSION: 0,
     ALLOW_SUBDIR: false
@@ -26,6 +27,17 @@ export default function setMainState(state: Object = initStoreMain, action: Acti
       return {
         ...state,
         loadedInit: action.payload
+      };
+    case SET_CURRENT_CATEGORY:
+      return {
+        ...state,
+        currentCategory: action.payload,
+        needToUpdateCatalog: true
+      };
+    case NEED_TO_UPDATE_CATALOG:
+      return {
+        ...state,
+        needToUpdateCatalog: action.payload
       };
     case QUESTION_PER_QUIZSESSION:
       return {

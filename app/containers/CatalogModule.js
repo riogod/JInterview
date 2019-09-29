@@ -9,7 +9,8 @@ import Catalog from '../components/Catalog';
 function mapStateToProps(state) {
   return {
     currentCategory: state.main.currentCategory,
-    searchPhrase: state.main.searchPhrase
+    searchPhrase: state.main.searchPhrase,
+    needToUpdateCatalogState: state.main.needToUpdateCatalog
   };
 }
 
