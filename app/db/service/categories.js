@@ -1,4 +1,5 @@
 const appCategories = require('../models/categories');
+const db = require('../config/database');
 
 export default class DbServiceCategory {
   getCategories = async parentId => {
@@ -47,6 +48,29 @@ export default class DbServiceCategory {
       .catch(err => console.error(`Something wrong: ${err}`));
 
     return resultValue;
+  };
+
+  getAllParent = async categoryId => {
+    return db
+      .query(
+        `with name_tree as 
+              (
+              select id, parent_id, category_name
+               from categories
+               where id = ${categoryId}
+               union all
+               select C.id, C.parent_id, C.category_name
+               from categories c
+               join name_tree p on C.id = P.parent_id 
+                AND C.id<>C.parent_id 
+              )
+            select id, category_name from name_tree;`
+      )
+      .then(res => {
+        // console.log(res[0]);
+        return res[0];
+      })
+      .catch(err => console.error(`Something wrong: ${err}`));
   };
 
   updateCategory = async (

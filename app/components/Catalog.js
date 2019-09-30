@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Icon, Input, Button } from 'antd';
 import DbServiceCategory from '../db/service/categories';
 import CatalogItem from '../containers/Catalog/CatalogItemModule';
+import CatalogPaneModule from '../containers/Catalog/CatalogPaneModule';
 
 type Props = {
   currentCategory: number,
@@ -109,7 +110,6 @@ export default class Catalog extends Component<Props> {
           onKeyDown={e => {
             if (e.key === 'Enter') {
               this.handleSubmit(e);
-              console.log('Enter clicked');
             }
             if (e.key === 'Escape') {
               this.clearAdding();
@@ -128,7 +128,6 @@ export default class Catalog extends Component<Props> {
           onKeyDown={e => {
             if (e.key === 'Enter') {
               this.handleSubmit(e);
-              console.log('Enter clicked');
             }
             if (e.key === 'Escape') {
               this.clearAdding();
@@ -144,7 +143,6 @@ export default class Catalog extends Component<Props> {
         <Button
           onClick={() => {
             this.clearAdding();
-            console.log('clicked');
           }}
         >
           Cancel
@@ -165,8 +163,6 @@ export default class Catalog extends Component<Props> {
   };
 
   render() {
-    console.log('Catalog props: ', this.props);
-    console.log('Catalog state: ', this.state);
     const { isCategoryLoaded, categoryArr } = this.state;
 
     // this.dbCategory.updateCategory(27, 0, 'AHAHA', 'this is a descr', 8);
@@ -177,6 +173,7 @@ export default class Catalog extends Component<Props> {
         });
     return (
       <div className="catalog-container">
+        <CatalogPaneModule />
         <div className="catalog-itemlist">
           {catalogItems} {isCategoryLoaded ? this.catalogAddItem() : null}
         </div>
