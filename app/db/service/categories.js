@@ -1,5 +1,8 @@
+const Sequelize = require('sequelize');
 const appCategories = require('../models/categories');
 const db = require('../config/database');
+
+const { Op } = Sequelize;
 
 export default class DbServiceCategory {
   getCategories = async parentId => {
@@ -14,6 +17,31 @@ export default class DbServiceCategory {
         ],
         order: [['sort_order', 'ASC']],
         where: { parent_id: parentId }
+      })
+      .then(result => {
+        return result;
+      })
+      .catch(err => console.error(`Something wrong: ${err}`));
+
+    return resultValue;
+  };
+
+  getCategoriesSearch = async searchPhrase => {
+    const resultValue = await appCategories
+      .findAll({
+        attributes: [
+          'id',
+          'parent_id',
+          'category_name',
+          'category_descr',
+          'sort_order'
+        ],
+        order: [['sort_order', 'ASC']],
+        where: {
+          category_name: {
+            [Op.like]: `%${searchPhrase}%`
+          }
+        }
       })
       .then(result => {
         return result;
@@ -39,6 +67,7 @@ export default class DbServiceCategory {
     return resultValue;
   };
 
+  // TODO: need to delete all child categories and questions
   removeCategory = async categoryId => {
     const resultValue = await appCategories
       .destroy({

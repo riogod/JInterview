@@ -7,12 +7,19 @@ export const QUESTION_PER_QUIZSESSION = 'QUESTION_PER_QUIZSESSION';
 export const ALLOW_SUBDIR = 'ALLOW_SUBDIR';
 export const NEED_TO_UPDATE_CATALOG = 'NEED_TO_UPDATE_CATALOG';
 export const SET_CURRENT_CATEGORY = 'SET_CURRENT_CATEGORY';
+export const SET_SEARCH_PHRASE = 'SET_SEARCH_PHRASE';
 const dbSettings = new DbServiceSettings();
 
 
 export function setCurrentPath(module: string) {
   return (dispatch: Dispatch) => {
     dispatch({ type: SET_CURRENT_PATH, payload: module });
+  };
+}
+
+export function setSearchPhrase(module: string) {
+  return (dispatch: Dispatch) => {
+    dispatch({ type: SET_SEARCH_PHRASE, payload: module });
   };
 }
 

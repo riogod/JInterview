@@ -8,7 +8,8 @@ import CatalogPaneModule from '../containers/Catalog/CatalogPaneModule';
 type Props = {
   currentCategory: number,
   needToUpdateCatalog: Function,
-  needToUpdateCatalogState: boolean
+  needToUpdateCatalogState: boolean,
+  searchPhrase: string
 };
 
 export default class Catalog extends Component<Props> {
@@ -33,15 +34,43 @@ export default class Catalog extends Component<Props> {
     this.fetchCategoryToState(currentCategory);
   }
 
-  componentDidUpdate(): void {
+  componentDidUpdate(prevProps): void {
     const {
       needToUpdateCatalog,
       currentCategory,
       needToUpdateCatalogState
     } = this.props;
+    const categoryArr = [];
+
+    const { searchPhrase } = this.props;
 
     if (needToUpdateCatalogState) {
       needToUpdateCatalog(false);
+      this.fetchCategoryToState(currentCategory);
+    }
+
+    if (searchPhrase !== prevProps.searchPhrase && searchPhrase.length > 2) {
+      console.log(searchPhrase, searchPhrase.length);
+
+      this.dbCategory
+        .getCategoriesSearch(searchPhrase)
+        .then(res => {
+          res.forEach(el => {
+            categoryArr.push({
+              id: el.id,
+              name: el.category_name,
+              descr: el.category_descr,
+              pid: el.parent_id,
+              sort_order: el.sort_order
+            });
+          });
+          this.setState({ isCategoryLoaded: true, categoryArr });
+          return true;
+        })
+        .catch(err => console.log(`Something wrong: ${err}`));
+    }
+
+    if (searchPhrase !== prevProps.searchPhrase && searchPhrase.length <= 2) {
       this.fetchCategoryToState(currentCategory);
     }
   }

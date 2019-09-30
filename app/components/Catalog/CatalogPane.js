@@ -1,11 +1,13 @@
 // @flow
 import React, { Component } from 'react';
-import { Breadcrumb, Icon } from 'antd';
+import { Breadcrumb, Icon, Input } from 'antd';
 import DbServiceCategory from '../../db/service/categories';
 
 type Props = {
   setCurrentCategory: Function,
-  currentCategory: number
+  currentCategory: number,
+  setSearchPhrase: Function,
+  searchPhrase: string
 };
 
 export default class CatalogPane extends Component<Props> {
@@ -13,6 +15,7 @@ export default class CatalogPane extends Component<Props> {
 
   constructor(props) {
     super(props);
+    this.inputSearch = React.createRef();
     this.state = {
       isBreadcrumbsLoaded: false,
       breadcrumbs: []
@@ -21,6 +24,12 @@ export default class CatalogPane extends Component<Props> {
 
   componentDidUpdate(prevProps): void {
     const { currentCategory } = this.props;
+    const { searchPhrase } = this.props;
+
+    if (searchPhrase !== prevProps.searchPhrase) {
+      console.log('REF!!!!', this.inputSearch);
+      this.inputSearch.current.state.value = '';
+    }
 
     if (currentCategory !== prevProps.currentCategory) {
       this.dbCategory
@@ -91,10 +100,20 @@ export default class CatalogPane extends Component<Props> {
   };
 
   render() {
+    const { setSearchPhrase } = this.props;
+
     return (
       <div className="catalog-pane">
         <div>{this.BreadcrumbCreate()}</div>
-        <div>searching</div>
+        <div>
+          <Input
+            placeholder="input search text"
+            allowClear
+            ref={this.inputSearch}
+            onChange={e => setSearchPhrase(e.target.value)}
+            style={{ width: 200 }}
+          />
+        </div>
       </div>
     );
   }
