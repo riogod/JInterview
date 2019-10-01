@@ -4,11 +4,15 @@ import { Icon, Input, Button } from 'antd';
 import DbServiceCategory from '../db/service/categories';
 import CatalogItem from '../containers/Catalog/CatalogItemModule';
 import CatalogPaneModule from '../containers/Catalog/CatalogPaneModule';
+import QuestionsModule from '../containers/Catalog/QuestionsModule';
 
 type Props = {
   currentCategory: number,
   needToUpdateCatalog: Function,
+  setCategoryHaveSubs: Function,
   needToUpdateCatalogState: boolean,
+  categoryHaveItems: boolean,
+  categoryHaveSubs: boolean,
   searchPhrase: string
 };
 
@@ -65,6 +69,7 @@ export default class Catalog extends Component<Props> {
             });
           });
           this.setState({ isCategoryLoaded: true, categoryArr });
+
           return true;
         })
         .catch(err => console.log(`Something wrong: ${err}`));
@@ -80,6 +85,7 @@ export default class Catalog extends Component<Props> {
   // Get current catalog data and placing to state
   fetchCategoryToState = currentCategory => {
     const categoryArr = [];
+    const { setCategoryHaveSubs, categoryHaveSubs } = this.props;
 
     this.dbCategory
       .getCategories(currentCategory)
@@ -94,6 +100,23 @@ export default class Catalog extends Component<Props> {
           });
         });
         this.setState({ isCategoryLoaded: true, categoryArr });
+
+        if (categoryArr.length > 0) {
+          console.log('categoryArr true', categoryArr.length, categoryHaveSubs);
+          if (!categoryHaveSubs) {
+            setCategoryHaveSubs(true);
+          }
+        } else {
+          console.log(
+            'categoryArr 5false',
+            categoryArr.length,
+            categoryHaveSubs
+          );
+          if (categoryHaveSubs) {
+            setCategoryHaveSubs(false);
+          }
+        }
+
         return true;
       })
       .catch(err => console.log(`Something wrong: ${err}`));
@@ -193,19 +216,25 @@ export default class Catalog extends Component<Props> {
 
   render() {
     const { isCategoryLoaded, categoryArr } = this.state;
+    const { categoryHaveItems, searchPhrase } = this.props;
 
-    // this.dbCategory.updateCategory(27, 0, 'AHAHA', 'this is a descr', 8);
     const catalogItems = !isCategoryLoaded
       ? null
       : categoryArr.map(el => {
           return <CatalogItem key={el.id} item={el} />;
         });
+
+    console.log('categoryHaveItems:', categoryHaveItems);
     return (
       <div className="catalog-container">
         <CatalogPaneModule />
         <div className="catalog-itemlist">
-          {catalogItems} {isCategoryLoaded ? this.catalogAddItem() : null}
+          {catalogItems}
+          {isCategoryLoaded && !categoryHaveItems && searchPhrase.length < 3
+            ? this.catalogAddItem()
+            : null}
         </div>
+        <QuestionsModule />
       </div>
     );
   }

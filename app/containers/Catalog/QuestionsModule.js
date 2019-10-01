@@ -3,16 +3,15 @@
 import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
-import * as MainActions from '../actions/main';
-import Catalog from '../components/Catalog';
+import * as MainActions from '../../actions/main';
+import Questions from '../../components/Catalog/Questions';
 
 function mapStateToProps(state) {
   return {
-    currentCategory: state.main.currentCategory,
-    searchPhrase: state.main.searchPhrase,
     needToUpdateCatalogState: state.main.needToUpdateCatalog,
-    categoryHaveSubs: state.main.categoryHaveSubs,
-    categoryHaveItems: state.main.categoryHaveItems
+    currentCategory: state.main.currentCategory,
+    categoryHaveItems: state.main.categoryHaveItems,
+    categoryHaveSubs: state.main.categoryHaveSubs
   };
 }
 
@@ -23,4 +22,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Catalog);
+)(Questions);

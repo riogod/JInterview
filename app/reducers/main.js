@@ -1,5 +1,5 @@
 // @flow
-import { SET_CURRENT_PATH, SET_LOADED_INIT, QUESTION_PER_QUIZSESSION, ALLOW_SUBDIR, NEED_TO_UPDATE_CATALOG, SET_CURRENT_CATEGORY, SET_SEARCH_PHRASE } from '../actions/main';
+import { SET_CURRENT_PATH, SET_LOADED_INIT, QUESTION_PER_QUIZSESSION, ALLOW_SUBDIR, NEED_TO_UPDATE_CATALOG, SET_CURRENT_CATEGORY, SET_SEARCH_PHRASE, SET_CATALOG_HAVE_ITEMS, SET_CATALOG_HAVE_SUBS } from '../actions/main';
 import type { Action } from './types';
 
 
@@ -10,6 +10,8 @@ let initStoreMain = {
   currentCategory: 0,
   searchPhrase: '',
   needToUpdateCatalog: false,
+  categoryHaveItems: false,
+  categoryHaveSubs: false,
   settings: {
     QUESTION_PER_QUIZSESSION: 0,
     ALLOW_SUBDIR: false
@@ -39,6 +41,16 @@ export default function setMainState(state: Object = initStoreMain, action: Acti
         currentCategory: action.payload,
         needToUpdateCatalog: true,
         searchPhrase: ''
+      };
+    case SET_CATALOG_HAVE_SUBS:
+      return {
+        ...state,
+        categoryHaveSubs: action.payload
+      };
+    case SET_CATALOG_HAVE_ITEMS:
+      return {
+        ...state,
+        categoryHaveItems: action.payload
       };
     case NEED_TO_UPDATE_CATALOG:
       return {

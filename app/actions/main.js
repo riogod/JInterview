@@ -8,6 +8,9 @@ export const ALLOW_SUBDIR = 'ALLOW_SUBDIR';
 export const NEED_TO_UPDATE_CATALOG = 'NEED_TO_UPDATE_CATALOG';
 export const SET_CURRENT_CATEGORY = 'SET_CURRENT_CATEGORY';
 export const SET_SEARCH_PHRASE = 'SET_SEARCH_PHRASE';
+export const SET_CATALOG_HAVE_ITEMS = 'SET_CATALOG_HAVE_ITEMS';
+export const SET_CATALOG_HAVE_SUBS = 'SET_CATALOG_HAVE_SUBS';
+
 const dbSettings = new DbServiceSettings();
 
 
@@ -26,6 +29,18 @@ export function setSearchPhrase(module: string) {
 export function setLoadedInit(init_val: boolean) {
   return (dispatch: Dispatch) => {
     dispatch({ type: SET_LOADED_INIT, payload: init_val });
+  };
+}
+
+export function setCategoryHaveItems(init_val: boolean) {
+  return (dispatch: Dispatch) => {
+    dispatch({ type: SET_CATALOG_HAVE_ITEMS, payload: init_val });
+  };
+}
+
+export function setCategoryHaveSubs(init_val: boolean) {
+  return (dispatch: Dispatch) => {
+    dispatch({ type: SET_CATALOG_HAVE_SUBS, payload: init_val });
   };
 }
 
