@@ -40,13 +40,9 @@ h2 {
   //background-color: aqua;
 }
 
-p {
-  font-size: 24px;
-}
-
-li {
-  list-style: none;
-}
+//li {
+//  list-style: none;
+//}
 
 .settings-container {
   box-sizing: border-box;
@@ -129,4 +125,30 @@ li {
 .catalog-pane {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.question-list {
+  display: flex;
+  flex-direction: column;
+
+  .question-item {
+    margin-bottom: 15px;
+    background-color: aliceblue;
+
+    .question-item-title {
+      background-color: #232c39;
+    }
+  }
+}
+
+.quill {
+  font-size: 1rem;
+}
+
+.answer-selectors {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
 }

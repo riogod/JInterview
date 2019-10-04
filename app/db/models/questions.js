@@ -23,3 +23,25 @@ const appQuestions = db.define(
 );
 
 module.exports = appQuestions;
+
+/*
+
+for answer - text
+{
+  answer: 'bla bla bla'
+}
+
+for answer - select
+{
+  answer: {
+            text: 'bla bla bla',
+            isTrue: true
+          },
+          {
+            text: 'bla bla bla2',
+            isTrue: false
+          }
+}
+
+
+ */
