@@ -1,5 +1,9 @@
 {
   "extends": "erb",
+  "rules": {
+    "react/no-danger": 0,
+    "flowtype/no-weak-types": 0
+  },
   "settings": {
     "import/resolver": {
       "webpack": {

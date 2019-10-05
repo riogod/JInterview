@@ -15,7 +15,7 @@ const appQuestions = db.define(
     question_name: Sequelize.STRING,
     question_description: Sequelize.STRING,
     question_type: Sequelize.STRING,
-    answer_data: Sequelize.JSON
+    answer_data: Sequelize.STRING
   },
   {
     timestamps: false
@@ -23,25 +23,3 @@ const appQuestions = db.define(
 );
 
 module.exports = appQuestions;
-
-/*
-
-for answer - text
-{
-  answer: 'bla bla bla'
-}
-
-for answer - select
-{
-  answer: {
-            text: 'bla bla bla',
-            isTrue: true
-          },
-          {
-            text: 'bla bla bla2',
-            isTrue: false
-          }
-}
-
-
- */

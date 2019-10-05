@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Modal, Button, Input, Radio, Icon, Checkbox } from 'antd';
+import { Modal, Button, Input, Radio, Icon, Checkbox, Popconfirm } from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -13,7 +13,8 @@ type Props = {
   needToUpdateCatalogState: boolean,
   categoryHaveItems: boolean,
   categoryHaveSubs: boolean,
-  setCategoryHaveItems: Function
+  setCategoryHaveItems: Function,
+  needToUpdateCatalog: Function
 };
 
 export default class Questions extends Component<Props> {
@@ -26,6 +27,8 @@ export default class Questions extends Component<Props> {
       questionArr: [],
 
       addItem: {
+        isEdit: false,
+        editId: 0,
         visible: false,
         itemName: '',
         itemDescr: '',
@@ -44,6 +47,7 @@ export default class Questions extends Component<Props> {
 
     this.setQuestionDescrState = this.setQuestionDescrState.bind(this);
     this.setAnswerTextState = this.setAnswerTextState.bind(this);
+    this.inputRef = React.createRef();
   }
 
   componentDidMount(): void {
@@ -114,7 +118,8 @@ export default class Questions extends Component<Props> {
             name: el.question_name,
             descr: el.question_description,
             pid: el.parent_id,
-            questionType: el.question_type
+            questionType: el.question_type,
+            answerData: el.answer_data
           });
         });
 
@@ -140,6 +145,57 @@ export default class Questions extends Component<Props> {
       .catch(err => console.log(`Something wrong: ${err}`));
   };
 
+  // Set edit item to state
+  setEditItemState(item) {
+    this.setState(prevState => ({
+      ...prevState,
+      addItem: {
+        isEdit: true,
+        editId: item.id,
+        visible: true,
+        itemName: item.name,
+        itemDescr: item.descr,
+        itemType: item.questionType,
+        answerData: {
+          text: item.questionType === 'text' ? item.answerData : '',
+          data: item.questionType !== 'text' ? JSON.parse(item.answerData) : []
+        }
+      }
+    }));
+  }
+
+  // Deleting question
+  confirmDeleting = itemid => {
+    const { needToUpdateCatalog } = this.props;
+    dbCategory
+      .removeQuestion(itemid)
+      .then(res => {
+        needToUpdateCatalog(true);
+        this.setState(prevState => ({
+          ...prevState,
+          addItem: {
+            isEdit: false,
+            editId: 0,
+            visible: false,
+            itemName: '',
+            itemDescr: '',
+            itemType: 'text',
+            answerData: {
+              text: '',
+              data: [
+                {
+                  isTrue: false,
+                  text: ''
+                }
+              ]
+            }
+          }
+        }));
+        return res;
+      })
+      .catch(err => console.log(`Something wrong: ${err}`));
+  };
+
   // Render question list of current category
   questionList = () => {
     const { isQuestionLoaded, questionArr } = this.state;
@@ -149,8 +205,32 @@ export default class Questions extends Component<Props> {
       : questionArr.map(el => {
           return (
             <div key={el.id} className="question-item">
-              <div className="question-item-title">{el.name}</div>
-              <div className="question-item-content">{el.descr}</div>
+              <div className="question-item-title">
+                {el.name}
+                <a
+                  href="#"
+                  onClick={() => {
+                    this.setEditItemState(el);
+                  }}
+                >
+                  <Icon type="form" />
+                </a>
+                <Popconfirm
+                  title="Are you sure？"
+                  onConfirm={() => this.confirmDeleting(el.id)}
+                  icon={
+                    <Icon type="question-circle-o" style={{ color: 'blue' }} />
+                  }
+                >
+                  <a href="#">
+                    <Icon type="delete" />
+                  </a>
+                </Popconfirm>
+              </div>
+              <div
+                className="question-item-content"
+                dangerouslySetInnerHTML={{ __html: el.descr }}
+              />
             </div>
           );
         });
@@ -172,24 +252,62 @@ export default class Questions extends Component<Props> {
 
   // Cancel editing or adding item
   addItemHandleCancel = () => {
-    const { addItem } = this.state;
-    this.setState({
+    this.setState(prevState => ({
+      ...prevState,
       addItem: {
-        ...addItem,
-        visible: false
+        isEdit: false,
+        editId: 0,
+        visible: false,
+        itemName: '',
+        itemDescr: '',
+        itemType: 'text',
+        answerData: {
+          text: '',
+          data: [
+            {
+              isTrue: false,
+              text: ''
+            }
+          ]
+        }
       }
-    });
+    }));
   };
 
   // Add/Edit item
   addItemHandleOk = () => {
     const { addItem } = this.state;
-    this.setState({
-      addItem: {
-        ...addItem,
-        visible: false
-      }
-    });
+    const { currentCategory, needToUpdateCatalog } = this.props;
+
+    if (addItem.itemName !== '') {
+      dbCategory
+        .addQuestionToDb(addItem, currentCategory)
+        .then(res => {
+          needToUpdateCatalog(true);
+          this.setState(prevState => ({
+            ...prevState,
+            addItem: {
+              isEdit: false,
+              editId: 0,
+              visible: false,
+              itemName: '',
+              itemDescr: '',
+              itemType: 'text',
+              answerData: {
+                text: '',
+                data: [
+                  {
+                    isTrue: false,
+                    text: ''
+                  }
+                ]
+              }
+            }
+          }));
+          return res;
+        })
+        .catch(err => console.log(`Something wrong: ${err}`));
+    }
   };
 
   // toolbar modules for rich text editor
@@ -214,7 +332,6 @@ export default class Questions extends Component<Props> {
   // state can be true or false.
   // true: It's a single answer selector
   // false: Multi answer selector
-
   answerMod = isRadioSelection => {
     const {
       addItem: {
@@ -352,7 +469,7 @@ export default class Questions extends Component<Props> {
   // Show add/edit dialog
   addQuestion = () => {
     const {
-      addItem: { visible, itemDescr }
+      addItem: { visible, itemDescr, itemName, itemType }
     } = this.state;
     return (
       <div>
@@ -367,12 +484,15 @@ export default class Questions extends Component<Props> {
           maskClosable={false}
           width="900px"
         >
-          <Input
-            placeholder="Title"
-            onChange={e => {
-              this.setQuestionTitleState(e.target.value);
-            }}
-          />
+          <div ref={this.inputRef}>
+            <Input
+              placeholder="Title"
+              value={itemName}
+              onChange={e => {
+                this.setQuestionTitleState(e.target.value);
+              }}
+            />
+          </div>
           <ReactQuill
             value={itemDescr}
             modules={this.RTEmodules}
@@ -380,6 +500,7 @@ export default class Questions extends Component<Props> {
           />
 
           <Radio.Group
+            value={itemType}
             onChange={e => {
               const { addItem } = this.state;
               this.setState({

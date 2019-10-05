@@ -135,7 +135,7 @@ h2 {
 
   .question-item {
     margin-bottom: 15px;
-    background-color: aliceblue;
+    background-color: #b3abae;
 
     .question-item-title {
       background-color: #232c39;
@@ -151,4 +151,10 @@ h2 {
   display: flex;
   flex-direction: column;
   width: 90%;
+}
+
+.ffff {
+  border: 4px solid red;
+  background-color: #000c17;
+  color: aliceblue;
 }

@@ -24,4 +24,34 @@ export default class DbServiceQuestions {
 
     return resultValue;
   };
+
+  addQuestionToDb = async (item, categoryId) => {
+    const data = {
+      parent_id: categoryId,
+      question_name: item.itemName,
+      question_description: item.itemDescr,
+      question_type: item.itemType,
+      answer_data:
+        item.itemType === 'multi' || item.itemType === 'select'
+          ? JSON.stringify(item.answerData.data)
+          : item.answerData.text
+    };
+    console.log('addQuestionToDb', item, data);
+    return !item.isEdit
+      ? appQuestions.create(data)
+      : appQuestions.update(data, {
+          where: {
+            id: item.editId
+          }
+        });
+  };
+
+  removeQuestion = async itemId => {
+    return appQuestions
+      .destroy({
+        where: { id: itemId }
+      })
+      .then(result => result)
+      .catch(err => console.error(`Something wrong: ${err}`));
+  };
 }
