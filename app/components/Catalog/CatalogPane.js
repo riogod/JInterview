@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Breadcrumb, Icon, Input } from 'antd';
 import DbServiceCategory from '../../db/service/categories';
+import './CatalogPane.scss';
 
 type Props = {
   setCurrentCategory: Function,
@@ -22,12 +23,28 @@ export default class CatalogPane extends Component<Props> {
     };
   }
 
+  componentDidMount(): void {
+    const { currentCategory } = this.props;
+
+    this.dbCategory
+      .getAllParent(currentCategory)
+      .then(res => {
+        this.setState({
+          isBreadcrumbsLoaded: true,
+          breadcrumbs: res.reverse()
+        });
+        return res;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
   componentDidUpdate(prevProps): void {
     const { currentCategory } = this.props;
     const { searchPhrase } = this.props;
 
     if (searchPhrase !== prevProps.searchPhrase) {
-      console.log('REF!!!!', this.inputSearch);
       this.inputSearch.current.state.value = '';
     }
 
@@ -75,15 +92,13 @@ export default class CatalogPane extends Component<Props> {
     const { setCurrentCategory } = this.props;
     const { breadcrumbs } = this.state;
 
-    // console.log('breadcrumbs:', breadcrumbs);
-
     const { isBreadcrumbsLoaded } = this.state;
     const BreadcrumbShow = isBreadcrumbsLoaded
       ? this.breadcrumbArr(breadcrumbs)
       : null;
 
     return (
-      <Breadcrumb>
+      <Breadcrumb separator="">
         <Breadcrumb.Item>
           <a
             href="#"
@@ -100,18 +115,19 @@ export default class CatalogPane extends Component<Props> {
   };
 
   render() {
-    const { setSearchPhrase } = this.props;
-
+    const { setSearchPhrase, currentCategory } = this.props;
+    console.log('currentCategory', currentCategory);
     return (
       <div className="catalog-pane">
-        <div>{this.BreadcrumbCreate()}</div>
+        <div>{currentCategory !== 0 ? this.BreadcrumbCreate() : null}</div>
         <div>
           <Input
-            placeholder="input search text"
+            placeholder="Search.."
             allowClear
+            prefix={<Icon type="search" className="icon-search-input" />}
             ref={this.inputSearch}
             onChange={e => setSearchPhrase(e.target.value)}
-            style={{ width: 200 }}
+            style={{ width: 300 }}
           />
         </div>
       </div>

@@ -16,6 +16,8 @@ type Props = {
   searchPhrase: string
 };
 
+const { TextArea } = Input;
+
 export default class Catalog extends Component<Props> {
   props: Props;
 
@@ -154,9 +156,10 @@ export default class Catalog extends Component<Props> {
     const { addItem } = this.state;
     const { addItemValue } = this.state;
     const res = addItem ? (
-      <div>
+      <React.Fragment>
         <Input
           name="category_name"
+          className="catalog-itemadd-header-input"
           placeholder="Category name"
           value={addItemValue.category_name}
           onKeyDown={e => {
@@ -173,7 +176,9 @@ export default class Catalog extends Component<Props> {
             });
           }}
         />
-        <Input
+        <TextArea
+          className="catalog-itemadd-header-textarea"
+          autosize={{ minRows: 1, maxRows: 6 }}
           name="category_descr"
           placeholder="Category description"
           value={addItemValue.category_descr}
@@ -191,15 +196,17 @@ export default class Catalog extends Component<Props> {
             });
           }}
         />
-        <Button onClick={e => this.handleSubmit(e)}>Send</Button>
-        <Button
-          onClick={() => {
-            this.clearAdding();
-          }}
-        >
-          Cancel
-        </Button>
-      </div>
+        <div className="catalog-itemadd-edit-footer">
+          <Button onClick={e => this.handleSubmit(e)}>Ok</Button>
+          <Button
+            onClick={() => {
+              this.clearAdding();
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
+      </React.Fragment>
     ) : (
       <a
         href="#"
@@ -226,16 +233,18 @@ export default class Catalog extends Component<Props> {
 
     console.log('categoryHaveItems:', categoryHaveItems);
     return (
-      <div className="catalog-container">
+      <React.Fragment>
         <CatalogPaneModule />
-        <div className="catalog-itemlist">
-          {catalogItems}
-          {isCategoryLoaded && !categoryHaveItems && searchPhrase.length < 3
-            ? this.catalogAddItem()
-            : null}
+        <div className="catalog-container">
+          <div className="catalog-itemlist">
+            {catalogItems}
+            {isCategoryLoaded && !categoryHaveItems && searchPhrase.length < 3
+              ? this.catalogAddItem()
+              : null}
+          </div>
+          <QuestionsModule />
         </div>
-        <QuestionsModule />
-      </div>
+      </React.Fragment>
     );
   }
 }

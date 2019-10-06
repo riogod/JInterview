@@ -3,7 +3,78 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 @import '~@fortawesome/fontawesome-free/css/all.css';
-@import '~antd/dist/antd.css';
+
+@font-face {
+  font-family: 'SanfriscoRUSWorld-Medium';
+  src: url('../resources/fonts/SanfriscoRUSWorld-Medium.woff2') format('woff2'),
+    url('../resources/fonts/SanfriscoRUSWorld-Medium.ttf') format('ttf'),
+    url('../resources/fonts/SanfriscoRUSWorld-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'BureauAP';
+  src: url('../resources/fonts/BureauAP.woff2') format('woff2'),
+    url('../resources/fonts/BureauAP.ttf') format('ttf'),
+    url('../resources/fonts/BureauAP.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'LeagueGothic';
+  src: url('../resources/fonts/LeagueGothic.woff2') format('woff2'),
+    url('../resources/fonts/LeagueGothic.ttf') format('ttf'),
+    url('../resources/fonts/LeagueGothic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'RollestonText-Italic';
+  src: url('../resources/fonts/RollestonText-Italic.woff2') format('woff2'),
+    url('../resources/fonts/RollestonText-Italic.ttf') format('ttf'),
+    url('../resources/fonts/RollestonText-Italic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Flaticon';
+  src: url('../resources/fonts/Flaticon.eot');
+  src: url('../resources/fonts/Flaticon.eot?#iefix') format('embedded-opentype'),
+    url('../resources/fonts/Flaticon.woff2') format('woff2'),
+    url('../resources/fonts/Flaticon.woff') format('woff'),
+    url('../resources/fonts/Flaticon.ttf') format('truetype'),
+    url('../resources/fonts/Flaticon.svg#Flaticon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  @font-face {
+    font-family: 'Flaticon';
+    src: url('../resources/fonts/Flaticon.svg#Flaticon') format('svg');
+  }
+}
+
+[class^='flaticon-']::before,
+[class*=' flaticon-']::before,
+[class^='flaticon-']::after,
+[class*=' flaticon-']::after {
+  font-family: Flaticon, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+}
+
+.flaticon-multimedia::before {
+  content: '\f100';
+}
+.flaticon-edit::before {
+  content: '\f101';
+}
+.flaticon-exit::before {
+  content: '\f102';
+}
+.flaticon-help::before {
+  content: '\f103';
+}
+.flaticon-graph::before {
+  content: '\f104';
+}
 
 $scrollbar-width: 10px;
 $chat-thread-bgd-color: rgba(25, 147, 147, 0.2);
@@ -12,40 +83,41 @@ $base-color-focus: #8ba7aa;
 $base-color-border: #2e484b;
 
 body {
-  color: white;
-  height: 100vh;
-  background-color: #232c39;
-  background-image: linear-gradient(
-    45deg,
-    rgba(0, 216, 255, 0.5) 10%,
-    rgba(0, 1, 127, 0.7)
-  );
-  font-family: Arial, Helvetica, Helvetica Neue, serif;
-  overflow-y: hidden;
-  overflow-x: hidden;
+  background: #fff url('../resources/bg.jpg') no-repeat fixed center;
+  background-size: cover;
+  overflow: hidden;
   padding: 0;
   margin: 0;
 }
 
+//body {
+//  height: 100vh;
+//  background-color: #232c39;
+//  background-image: linear-gradient(
+//    45deg,
+//    rgba(0, 216, 255, 0.5) 10%,
+//    rgba(0, 1, 127, 0.7)
+//  );
+//  font-family: Arial, Helvetica, Helvetica Neue, serif;
+//  overflow-y: hidden;
+//  overflow-x: hidden;
+//  padding: 0;
+//  margin: 0;
+//}
+
 #root {
   height: 100vh;
+  box-sizing: border-box;
 }
 
-h2 {
-  margin: 0;
-  font-size: 2.25rem;
-  font-weight: bold;
-  letter-spacing: -0.025em;
-  color: #fff;
+.catalog-container {
+  height: calc(100% - 220px);
+  overflow-y: auto;
+  width: 98%;
+  box-sizing: border-box;
+  margin: 10px 15px 0 15px;
+  padding: 15px;
 }
-
-.header-style {
-  //background-color: aqua;
-}
-
-//li {
-//  list-style: none;
-//}
 
 .settings-container {
   box-sizing: border-box;
@@ -65,12 +137,6 @@ h2 {
 
 .loading-spinner {
   width: 100%;
-}
-
-.catalog-container {
-  height: calc(100% - 120px);
-  overflow-y: auto;
-  margin: 10px 15px 0 15px;
 }
 
 ::-webkit-scrollbar {
@@ -96,33 +162,109 @@ h2 {
 .catalog-item {
   display: flex;
   background: #fff;
-  border-radius: 2px;
+  border-radius: 6px;
   color: #232c39;
-  height: 80px;
+  min-height: 100px;
   box-sizing: border-box;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  overflow: hidden;
+  position: relative;
 
-  & > div:first-child {
-    width: calc(100% - 50px);
-    background-color: aquamarine;
+  .catalog-item-header {
+    font-family: 'LeagueGothic', sans-serif;
+    font-size: 24px;
+    color: #023859;
   }
 
-  & > div:last-child {
-    width: 50px;
-    background-color: antiquewhite;
+  .catalog-item-container {
+    box-sizing: border-box;
+    padding: 10px 10px 20px 20px;
+    width: calc(100% - 40px);
+    font-family: 'RollestonText-Italic', sans-serif;
+    font-size: 14px;
+    background: rgba(98, 37, 230, 0.2);
+    background: linear-gradient(
+      15deg,
+      rgba(98, 37, 230, 0.2) 0%,
+      #fffef0 16%,
+      #fffef0 100%
+    );
+
+    &:hover {
+      background: #40a9ff;
+    }
+  }
+
+  & .catalog-item-actions {
+    width: 40px;
+    background: linear-gradient(#de685e, #ee786e);
+    border-left: aliceblue dotted 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+
+  .catalog-edit-item-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 12px 10px 20px 20px;
+
+    .catalog-item-header-input {
+      font-family: 'LeagueGothic', sans-serif;
+      font-size: 24px;
+      color: #023859;
+    }
+
+    .catalog-item-header-textarea {
+      font-family: 'RollestonText-Italic', sans-serif;
+      font-size: 14px;
+      color: #023859;
+    }
+
+    .catalog-item-edit-footer {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+    }
   }
 }
 
 .catalog-itemadd {
   display: flex;
+  flex-direction: column;
+  padding: 12px 10px 20px 20px;
+  width: 100%;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 2px;
   color: #fff;
-  height: 80px;
+  min-height: 100px;
   box-sizing: border-box;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+
+  .catalog-itemadd-header-input {
+    font-family: 'LeagueGothic', sans-serif;
+    font-size: 24px;
+    color: #fdfffd;
+    background: rgba(240, 255, 255, 0);
+  }
+
+  .catalog-itemadd-header-textarea {
+    font-family: 'RollestonText-Italic', sans-serif;
+    font-size: 14px;
+    color: #fdfffd;
+    background: rgba(240, 255, 255, 0);
+  }
+
+  .catalog-itemadd-edit-footer {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
 }
 
 .catalog-pane {
@@ -208,7 +350,7 @@ h2 {
   }
 
   .ant-modal-header {
-    background-color: $base-color;
+    //background-color: $base-color;
   }
 
   .anticon-delete {
@@ -221,5 +363,5 @@ h2 {
 }
 
 .ant-table-wrapper {
-  background-color: #fff;
+  //background-color: #fff;
 }

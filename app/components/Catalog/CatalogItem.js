@@ -8,6 +8,7 @@ type Props = {
   needToUpdateCatalog: Function,
   setCurrentCategory: Function
 };
+const { TextArea } = Input;
 
 export default class Catalog extends Component<Props> {
   props: Props;
@@ -98,9 +99,10 @@ export default class Catalog extends Component<Props> {
     const { item, setCurrentCategory } = this.props;
 
     const res = isEdit ? (
-      <React.Fragment>
+      <div className="catalog-edit-item-container">
         <Input
           name="category_name"
+          className="catalog-item-header-input"
           placeholder="Category name"
           value={editItem.category_name}
           onKeyDown={e => {
@@ -118,8 +120,10 @@ export default class Catalog extends Component<Props> {
             });
           }}
         />
-        <Input
+        <TextArea
+          autosize={{ minRows: 1, maxRows: 6 }}
           name="category_descr"
+          className="catalog-item-header-textarea"
           placeholder="Category description"
           value={editItem.category_descr}
           onKeyDown={e => {
@@ -137,47 +141,57 @@ export default class Catalog extends Component<Props> {
             });
           }}
         />
-        <Button onClick={e => this.handleSubmit(e)}>Send</Button>
-        <Button
-          onClick={() => {
-            this.clearEditing();
-            console.log('clicked');
-          }}
-        >
-          Cancel
-        </Button>
-      </React.Fragment>
-    ) : (
-      <React.Fragment>
-        <div>
-          <a
-            href="#"
+        <div className="catalog-item-edit-footer">
+          <Button onClick={e => this.handleSubmit(e)}>Ok</Button>
+          <Button
             onClick={() => {
-              setCurrentCategory(item.id);
+              this.clearEditing();
             }}
           >
-            {item.name}
-          </a>
+            Cancel
+          </Button>
         </div>
-        <div>
-          [start] [
+      </div>
+    ) : (
+      <React.Fragment>
+        <a
+          className="catalog-item-container"
+          role="button"
+          tabIndex={-1}
+          onClick={() => {
+            setCurrentCategory(item.id);
+          }}
+          onKeyDown={() => {
+            setCurrentCategory(item.id);
+          }}
+        >
+          <div className="catalog-item-header">{item.name}</div>
+          {item.descr}
+        </a>
+        <div className="catalog-item-actions">
+          <a href="#" className="flaticon-multimedia">
+            {' '}
+          </a>
+
           <a
             href="#"
+            className="flaticon-edit"
             onClick={() => {
               this.setState({ isEdit: true });
             }}
           >
-            edit
+            {' '}
           </a>
-          ] [
+
           <Popconfirm
             title="Are you sure？"
             onConfirm={this.confirmDeleting}
             icon={<Icon type="question-circle-o" style={{ color: 'blue' }} />}
           >
-            <a href="#">delete</a>
+            <a href="#" className="flaticon-exit">
+              {' '}
+            </a>
           </Popconfirm>
-          ]
         </div>
       </React.Fragment>
     );

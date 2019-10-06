@@ -1,0 +1,73 @@
+.appHeader {
+  height: 130px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}
+.header-logo {
+  font-size: 45px;
+  margin-left: 20px;
+  color: white;
+  font-family: 'SanfriscoRUSWorld-Medium', sans-serif;
+}
+.header-logo::first-letter {
+  color: red;
+}
+
+.menuItems {
+  display: flex;
+  margin-right: 20px;
+}
+
+.menuItem {
+  display: flex;
+  padding: 10px 45px;
+  letter-spacing: 2px;
+  text-decoration: none;
+  font-family: 'BureauAP', sans-serif;
+  font-size: 18px;
+  color: white;
+  background: #6225e6;
+  transition: 0.5s;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.47);
+  transform: skewX(-15deg);
+  margin-right: 4px;
+
+  &:hover {
+    background-color: #40a9ff;
+    transition: 0.3s;
+    box-shadow: 10px 10px 0 rgba(75, 121, 161, 0.09);
+    color: #000c17;
+  }
+
+  & span {
+    transform: skewX(15deg);
+  }
+
+  & span:nth-child(2) {
+    width: 20px;
+    margin-left: 30px;
+    position: relative;
+    top: 12%;
+    transition: 0.3s;
+    margin-right: 0;
+  }
+
+  &:hover span:nth-child(2) {
+    transition: 0.3s;
+    margin-right: 45px;
+  }
+}
+
+.menuActiveItem {
+  background-color: aliceblue;
+  color: #000c17;
+  cursor: default;
+  box-shadow: 10px 10px 0 rgba(75, 121, 161, 0.09);
+
+  &:hover {
+    background-color: aliceblue;
+    color: #000c17;
+  }
+}

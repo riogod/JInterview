@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../../constants/routes';
-import styles from './Header.css';
+import styles from './Header.scss';
 
 type Props = {
   menu: string
@@ -23,33 +23,31 @@ export default class Header extends Component<Props, State> {
           </div>
           <div className={styles.menuItems} data-tid="menuItems">
             <Link
-              className={
-                menu === 'main' ? styles.menuActiveItem : styles.menuItem
-              }
+              className={`menuItem ${
+                menu === 'main' ? 'menuActiveItem' : null
+              }`}
               data-tid="menuItem1"
               to={routes.MAIN}
             >
-              Category
+              <span>Category</span>
             </Link>
             <Link
-              className={
-                menu === 'module-stat' ? styles.menuActiveItem : styles.menuItem
-              }
+              className={`menuItem ${
+                menu === 'module-stat' ? 'menuActiveItem' : null
+              }`}
               data-tid="menuItem2"
               to={routes.STAT}
             >
-              Statistic
+              <span>Statistic</span>
             </Link>
             <Link
-              className={
-                menu === 'module-settings'
-                  ? styles.menuActiveItem
-                  : styles.menuItem
-              }
+              className={`menuItem ${
+                menu === 'module-settings' ? 'menuActiveItem' : null
+              }`}
               data-tid="menuItem3"
               to={routes.SETTINGS}
             >
-              Settings
+              <span>Settings</span>
             </Link>
           </div>
         </div>

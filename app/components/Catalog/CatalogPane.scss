@@ -1,0 +1,96 @@
+.catalog-pane {
+  margin-right: 20px;
+  margin-left: 30px;
+
+  .ant-breadcrumb {
+    font-size: 14px;
+    color: #40a9ff;
+    display: inline-block;
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.47);
+    border-radius: 4px;
+
+    .anticon-home {
+      font-size: 14px;
+    }
+
+    span {
+      float: left;
+      color: #c9bcc1;
+      background: #0378a6;
+      text-decoration: none;
+      position: relative;
+      height: 35px;
+      line-height: 35px;
+      padding: 0 5px 0 5px;
+      text-align: center;
+
+      :hover {
+        color: #6225e6;
+      }
+
+      i {
+        color: #fff0f6;
+      }
+
+      span a {
+        color: #fff0f6;
+
+        :hover {
+          color: #6225e6;
+        }
+      }
+    }
+
+    & > span {
+      border-right: rgba(179, 171, 174, 0.22) 1px solid;
+    }
+
+    & > span:first-child {
+      padding-left: 5px;
+      padding-right: 5px;
+      border-radius: 4px 0 0 4px;
+
+      &::before {
+        border: none;
+      }
+    }
+
+    & > span:last-child {
+      padding-right: 5px;
+      border-radius: 0 4px 4px 0;
+      background-color: #367fbf;
+      border-color: #367fbf;
+
+      ::after {
+        border: none;
+      }
+
+      span {
+        background-color: #367fbf;
+      }
+
+      :hover {
+        color: white;
+      }
+    }
+  }
+
+  .ant-input-affix-wrapper {
+    background-color: rgba(255, 240, 246, 0);
+
+    .ant-input {
+      background-color: rgba(255, 240, 246, 0);
+      color: aliceblue;
+    }
+
+    .ant-input-clear-icon {
+      color: aliceblue;
+    }
+
+    .icon-search-input {
+      color: #fff0f6;
+      font-size: 20px;
+      margin-left: -5px;
+    }
+  }
+}
