@@ -71,6 +71,9 @@ export default merge.smart(baseConfig, {
       },
       {
         test: /\.global\.css$/,
+        issuer: {
+          exclude: /\.less$/
+        },
         use: [
           {
             loader: 'style-loader'
@@ -86,6 +89,9 @@ export default merge.smart(baseConfig, {
       },
       {
         test: /^((?!\.global).)*\.css$/,
+        issuer: {
+          exclude: /\.less$/
+        },
         use: [
           {
             loader: 'style-loader'
@@ -104,6 +110,9 @@ export default merge.smart(baseConfig, {
       // SASS support - compile all .global.scss files and pipe it to style.css
       {
         test: /\.global\.(scss|sass)$/,
+        issuer: {
+          exclude: /\.less$/
+        },
         use: [
           {
             loader: 'style-loader'
@@ -122,6 +131,9 @@ export default merge.smart(baseConfig, {
       // SASS support - compile all other .scss files and pipe it to style.css
       {
         test: /^((?!\.global).)*\.(scss|sass)$/,
+        issuer: {
+          exclude: /\.less$/
+        },
         use: [
           {
             loader: 'style-loader'
@@ -137,6 +149,23 @@ export default merge.smart(baseConfig, {
           },
           {
             loader: 'sass-loader'
+          }
+        ]
+      },
+      {
+        test: /\.less$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader' // translates CSS into CommonJS
+          },
+          {
+            loader: 'less-loader', // compiles Less to CSS
+            options: {
+              javascriptEnabled: true
+            }
           }
         ]
       },

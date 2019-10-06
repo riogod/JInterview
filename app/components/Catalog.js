@@ -217,7 +217,7 @@ export default class Catalog extends Component<Props> {
   render() {
     const { isCategoryLoaded, categoryArr } = this.state;
     const { categoryHaveItems, searchPhrase } = this.props;
-
+    console.log('PROPS:', this.props);
     const catalogItems = !isCategoryLoaded
       ? null
       : categoryArr.map(el => {

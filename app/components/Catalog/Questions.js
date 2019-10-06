@@ -1,6 +1,16 @@
 // @flow
 import React, { Component } from 'react';
-import { Modal, Button, Input, Radio, Icon, Checkbox, Popconfirm } from 'antd';
+import {
+  Modal,
+  Button,
+  Input,
+  Radio,
+  Icon,
+  Checkbox,
+  Popconfirm,
+  Divider,
+  Table
+} from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -198,44 +208,59 @@ export default class Questions extends Component<Props> {
 
   // Render question list of current category
   questionList = () => {
-    const { isQuestionLoaded, questionArr } = this.state;
-
-    const questionItems = !isQuestionLoaded
-      ? null
-      : questionArr.map(el => {
+    const { questionArr } = this.state;
+    const columns = [
+      { title: 'Question', dataIndex: 'name', id: 'name' },
+      {
+        title: 'Action',
+        dataIndex: '',
+        key: 'x',
+        render: text => {
+          console.log('RENDER TABLE:', text);
           return (
-            <div key={el.id} className="question-item">
-              <div className="question-item-title">
-                {el.name}
-                <a
-                  href="#"
-                  onClick={() => {
-                    this.setEditItemState(el);
-                  }}
-                >
-                  <Icon type="form" />
+            <div className="question-item-title">
+              <a
+                href="#"
+                onClick={() => {
+                  this.setEditItemState(text);
+                }}
+              >
+                <Icon type="form" />
+              </a>
+              <Popconfirm
+                title="Are you sure？"
+                onConfirm={() => this.confirmDeleting(text.id)}
+                icon={
+                  <Icon type="question-circle-o" style={{ color: 'blue' }} />
+                }
+              >
+                <a href="#">
+                  <Icon type="delete" />
                 </a>
-                <Popconfirm
-                  title="Are you sure？"
-                  onConfirm={() => this.confirmDeleting(el.id)}
-                  icon={
-                    <Icon type="question-circle-o" style={{ color: 'blue' }} />
-                  }
-                >
-                  <a href="#">
-                    <Icon type="delete" />
-                  </a>
-                </Popconfirm>
-              </div>
-              <div
-                className="question-item-content"
-                dangerouslySetInnerHTML={{ __html: el.descr }}
-              />
+              </Popconfirm>
             </div>
           );
-        });
+        }
+      }
+    ];
 
-    return <div className="question-list">{questionItems}</div>;
+    return (
+      <div className="question-list">
+        <Table
+          columns={columns}
+          expandedRowRender={record => (
+            <p
+              style={{ margin: 0 }}
+              dangerouslySetInnerHTML={{ __html: record.descr }}
+            />
+          )}
+          dataSource={questionArr}
+          pagination={false}
+          expandRowByClick
+          showHeader={false}
+        />
+      </div>
+    );
   };
 
   // showing add/edit modal dialog
@@ -340,7 +365,7 @@ export default class Questions extends Component<Props> {
     } = this.state;
 
     return (
-      <div>
+      <div className="checkbox-answer">
         {isRadioSelection ? (
           <Radio.Group
             onChange={e => {
@@ -477,8 +502,9 @@ export default class Questions extends Component<Props> {
           add item
         </Button>
         <Modal
-          title="Title"
+          title="The question is:"
           visible={visible}
+          className="module-addEdit"
           onOk={this.addItemHandleOk}
           onCancel={this.addItemHandleCancel}
           maskClosable={false}
@@ -486,7 +512,7 @@ export default class Questions extends Component<Props> {
         >
           <div ref={this.inputRef}>
             <Input
-              placeholder="Title"
+              placeholder="Question title *requirement"
               value={itemName}
               onChange={e => {
                 this.setQuestionTitleState(e.target.value);
@@ -498,43 +524,45 @@ export default class Questions extends Component<Props> {
             modules={this.RTEmodules}
             onChange={this.setQuestionDescrState}
           />
-
-          <Radio.Group
-            value={itemType}
-            onChange={e => {
-              const { addItem } = this.state;
-              this.setState({
-                addItem: {
-                  ...addItem,
-                  itemType: e.target.value
-                }
-              });
-            }}
-            defaultValue="text"
-          >
-            <Radio.Button value="text">Текст</Radio.Button>
-            <Radio.Button
-              onClick={e => {
-                const {
+          <Divider>The answer is:</Divider>
+          <div className="answer-select">
+            <Radio.Group
+              buttonStyle="solid"
+              value={itemType}
+              onChange={e => {
+                const { addItem } = this.state;
+                this.setState({
                   addItem: {
-                    answerData: { data }
+                    ...addItem,
+                    itemType: e.target.value
                   }
-                } = this.state;
-                const stateCopy = Object.assign({}, this.state);
-                stateCopy.addItem.answerData.data = data.map(val => {
-                  return e.target.value === 0
-                    ? { isTrue: true, text: val.text }
-                    : { isTrue: false, text: val.text };
                 });
-                this.setState(stateCopy);
               }}
-              value="select"
+              defaultValue="text"
             >
-              Выбор
-            </Radio.Button>
-            <Radio.Button value="multi">Множественный выбор</Radio.Button>
-          </Radio.Group>
-
+              <Radio.Button value="text">Text</Radio.Button>
+              <Radio.Button
+                onClick={e => {
+                  const {
+                    addItem: {
+                      answerData: { data }
+                    }
+                  } = this.state;
+                  const stateCopy = Object.assign({}, this.state);
+                  stateCopy.addItem.answerData.data = data.map(val => {
+                    return e.target.value === 0
+                      ? { isTrue: true, text: val.text }
+                      : { isTrue: false, text: val.text };
+                  });
+                  this.setState(stateCopy);
+                }}
+                value="select"
+              >
+                One of
+              </Radio.Button>
+              <Radio.Button value="multi">Several of</Radio.Button>
+            </Radio.Group>
+          </div>
           {this.answerTypeSelect()}
         </Modal>
       </div>
@@ -542,17 +570,17 @@ export default class Questions extends Component<Props> {
   };
 
   render() {
-    const { isQuestionLoaded, questionArr } = this.state;
-    console.log('----> render', this.state);
+    // const { isQuestionLoaded, questionArr } = this.state;
+    // console.log('----> render', this.state);
     const { categoryHaveSubs } = this.props;
 
     const quShow = !categoryHaveSubs ? this.questionList() : null;
 
     const questionPane = !categoryHaveSubs ? this.addQuestion() : null;
 
-    if (isQuestionLoaded) {
-      console.log('Loaded ITEMS:', questionArr);
-    }
+    // if (isQuestionLoaded) {
+    //   console.log('Loaded ITEMS:', questionArr);
+    // }
 
     return (
       <div className="questions-block">
