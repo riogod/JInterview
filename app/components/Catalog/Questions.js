@@ -496,10 +496,14 @@ export default class Questions extends Component<Props> {
     const {
       addItem: { visible, itemDescr, itemName, itemType }
     } = this.state;
+    const { categoryHaveItems, categoryHaveSubs } = this.props;
     return (
       <div>
-        <Button type="primary" onClick={this.showAddModal}>
-          add item
+        {!categoryHaveItems && !categoryHaveSubs ? (
+          <Divider>Or you can add a questions:</Divider>
+        ) : null}
+        <Button type="primary" onClick={this.showAddModal} icon="plus-circle">
+          ADD NEW QUESTION
         </Button>
         <Modal
           title="The question is:"
@@ -570,17 +574,9 @@ export default class Questions extends Component<Props> {
   };
 
   render() {
-    // const { isQuestionLoaded, questionArr } = this.state;
-    // console.log('----> render', this.state);
     const { categoryHaveSubs } = this.props;
-
     const quShow = !categoryHaveSubs ? this.questionList() : null;
-
     const questionPane = !categoryHaveSubs ? this.addQuestion() : null;
-
-    // if (isQuestionLoaded) {
-    //   console.log('Loaded ITEMS:', questionArr);
-    // }
 
     return (
       <div className="questions-block">

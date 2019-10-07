@@ -159,6 +159,57 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 }
 
+.questions-block {
+  margin-top: 20px;
+
+  .ant-divider-inner-text {
+    color: #232c39;
+    background-color: rgba(240, 248, 255, 0.27);
+    border-top: 1px solid rgba(240, 248, 255, 0.27);
+    border-radius: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  .ant-btn {
+    background-color: rgba(98, 37, 230, 1);
+    height: 40px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    border-color: rgba(98, 37, 230, 0.2);
+
+    &:hover {
+      background-color: rgb(136, 50, 255);
+    }
+  }
+
+  .ant-table-placeholder {
+    display: none;
+  }
+
+  .ant-table-tbody {
+    background-color: rgba(222, 247, 255, 0.51);
+    font-weight: bold;
+
+    .anticon {
+      font-size: 22px;
+      margin-left: 15px;
+    }
+
+    & .ant-table-row {
+      border-bottom: 1px dotted #e8e8e8;
+    }
+  }
+}
+
+.ql-syntax {
+  background-color: #9a9a9e;
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 20px;
+  margin-right: 40px;
+}
+
 .catalog-item {
   display: flex;
   background: #fff;
