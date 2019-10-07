@@ -102,6 +102,29 @@ export default class DbServiceCategory {
       .catch(err => console.error(`Something wrong: ${err}`));
   };
 
+  // Selecting all subcategories returning id's
+  getAllSub = async categoryId => {
+    return db
+      .query(
+        `with name_tree as
+              (
+              select id, parent_id, category_name
+               from categories
+               where id = ${categoryId}
+               union all
+               select C.id, C.parent_id, C.category_name
+               from categories as C
+					join name_tree p on C.parent_id = P.id
+					AND C.id<>C.parent_id
+              )
+            select id from name_tree;`
+      )
+      .then(res => {
+        return res[0];
+      })
+      .catch(err => console.error(`Something wrong: ${err}`));
+  };
+
   updateCategory = async (
     categoryId,
     parentId,

@@ -216,7 +216,6 @@ export default class Questions extends Component<Props> {
         dataIndex: '',
         key: 'x',
         render: text => {
-          console.log('RENDER TABLE:', text);
           return (
             <div className="question-item-title">
               <a
