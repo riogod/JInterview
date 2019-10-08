@@ -91,6 +91,7 @@ export default class DbServiceQuestions {
     return this.getAllSubElements(categoryId)
       .then(data => {
         const valOfAllElements = data.reduce((a, b) => a + b.qcount, 0);
+
         const tmpData = data.map(el => {
           const val =
             elementsNeeded <= valOfAllElements
@@ -98,27 +99,6 @@ export default class DbServiceQuestions {
               : el.qcount;
           return { ...el, questionsToSelect: val };
         });
-
-        const valOfAllNeededElements = tmpData.reduce(
-          (a, b) => a + b.questionsToSelect,
-          0
-        );
-
-        if (valOfAllNeededElements > elementsNeeded) {
-          const indexMax = tmpData.indexOf(
-            tmpData.reduce(
-              (prev, cur) =>
-                cur.questionsToSelect > prev.questionsToSelect ? cur : prev,
-              { questionsToSelect: -Infinity }
-            )
-          );
-          tmpData[indexMax] = {
-            ...tmpData[indexMax],
-            questionsToSelect:
-              tmpData[indexMax].questionsToSelect -
-              (valOfAllNeededElements - elementsNeeded)
-          };
-        }
 
         const selectArray = tmpData.map(el => {
           return el.qcount > 0
@@ -132,7 +112,8 @@ export default class DbServiceQuestions {
 
         return Promise.all(selectArray.filter(el => el != null))
           .then(result => {
-            return result.flat();
+            const shuffled = result.flat().sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, elementsNeeded);
           })
           .catch(err => console.error(`Something wrong: ${err}`));
       })

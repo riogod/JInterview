@@ -33,7 +33,7 @@ export default class QuizSession extends Component<Props> {
     setCurrentPath('module-quizsession');
 
     if (!quizSessionInit && loadedInit) {
-      console.log('!quizSessionInit && loadedInit');
+      // console.log('!quizSessionInit && loadedInit');
       this.loadQuestionAndState();
     }
   }
@@ -41,7 +41,7 @@ export default class QuizSession extends Component<Props> {
   componentDidUpdate(): void {
     const { quizSessionInit, loadedInit } = this.props;
     if (!quizSessionInit && loadedInit) {
-      console.log('!quizSessionInit && loadedInit');
+      // console.log('!quizSessionInit && loadedInit');
       this.loadQuestionAndState();
     }
   }
@@ -98,7 +98,7 @@ export default class QuizSession extends Component<Props> {
     const { loadedInit, quizSessionInit } = this.props;
     const loadInitCheck = !loadedInit ? <InitLoading /> : null;
     if (quizSessionInit) {
-      console.log('QUIZ PROPS:', this.props, this.state);
+      // console.log('QUIZ PROPS:', this.props, this.state);
     }
     return (
       <React.Fragment>
