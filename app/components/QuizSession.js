@@ -1,8 +1,11 @@
 // @flow
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import DbServiceQuestions from '../db/service/questions';
 import Header from './header/Header';
 import InitLoading from '../containers/InitLoadingPage';
+import shineImg from '../../resources/shine.svg';
+import routes from '../constants/routes';
 
 const dbCategory = new DbServiceQuestions();
 
@@ -23,6 +26,7 @@ export default class QuizSession extends Component<Props> {
     this.state = {
       quizQuestionArr: [],
       isReady: false,
+      isFinish: false,
       currentQuestion: 0,
       quizTimer: 0
     };
@@ -77,7 +81,8 @@ export default class QuizSession extends Component<Props> {
             answer: {
               userAnswer: '',
               assessment: 0,
-              answerTimer: 0
+              answerTimerStart: 0,
+              answerTimerStop: 0
             }
           }))
         }));
@@ -94,17 +99,89 @@ export default class QuizSession extends Component<Props> {
       });
   };
 
+  // Prepare screen
+  isReadyRender = () => (
+    <React.Fragment>
+      <div className="quiz-isready-img">
+        <img src={shineImg} alt="Shine" />
+      </div>
+      <div className="quiz-isready-title">
+        Are you ready to shine ?
+        <div className="action">
+          <div className="action__btn">
+            <div className="action__btn__slide_efx action__btn__slide_efx-green" />
+            <a
+              role="button"
+              tabIndex={0}
+              onKeyDown={() => {}}
+              className="action__btn__btn"
+              onClick={() =>
+                this.setState(state => ({ ...state, isReady: true }))
+              }
+            >
+              READY
+            </a>
+          </div>
+        </div>
+        <div className="action">
+          <div className="action__btn">
+            <div className="action__btn__slide_efx" />
+            <Link
+              href="#"
+              className="action__btn__btn"
+              data-tid="menuItem1"
+              to={routes.MAIN}
+            >
+              No
+            </Link>
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+
+  quizModuleRender = () => {
+    // const { isReady, currentQuestion, quizTimer, quizQuestionArr } = this.state;
+
+    return (
+      <React.Fragment>
+        <a
+          role="button"
+          tabIndex={0}
+          onKeyDown={() => {}}
+          className="action__btn__btn"
+          onClick={() =>
+            this.setState(state => ({
+              ...state,
+              currentQuestion: state.currentQuestion + 1
+            }))
+          }
+        >
+          NEXT
+        </a>
+      </React.Fragment>
+    );
+  };
+
   render() {
     const { loadedInit, quizSessionInit } = this.props;
+    const { isReady, currentQuestion, quizTimer, quizQuestionArr } = this.state;
     const loadInitCheck = !loadedInit ? <InitLoading /> : null;
     if (quizSessionInit) {
-      // console.log('QUIZ PROPS:', this.props, this.state);
+      console.log('QUIZ PROPS:', this.props, this.state);
     }
+
     return (
       <React.Fragment>
         {loadInitCheck}
-        <Header menu="module-session" />
-        TIME TO QUUUUUUUiZ!!!!
+        <Header
+          menu="module-qsession"
+          allQuestions={quizQuestionArr.length}
+          currentQuestion={currentQuestion}
+          timer={quizTimer}
+        />
+        {!isReady && quizSessionInit ? this.isReadyRender() : null}
+        {isReady && quizSessionInit ? this.quizModuleRender() : null}
       </React.Fragment>
     );
   }

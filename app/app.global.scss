@@ -416,3 +416,92 @@ body {
 .ant-table-wrapper {
   //background-color: #fff;
 }
+
+.quiz-isready-title {
+  color: white;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.36);
+  position: absolute;
+  min-height: 25vh;
+  width: 40vw;
+  top: calc(50% - 10vh);
+  left: calc(50%);
+  padding: 30px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  box-shadow: 10px 10px 20px rgba(28, 26, 34, 0.3);
+  -webkit-transform: rotateY(-13deg) translateZ(400px);
+  transform: perspective(400px) rotateY(-23deg);
+  border: rgba(255, 255, 255, 0.63) 5px solid;
+  font-size: calc(1.2vh + 1.6vw);
+  font-family: 'BureauAP', sans-serif;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+}
+
+.action__btn {
+  z-index: 4;
+  width: calc(100%);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.action__btn .action__btn__btn {
+  width: 100%;
+  text-align: center;
+  z-index: 3;
+  height: 65px;
+  line-height: 60px;
+  background-color: rgba(255, 255, 255, 0);
+  border-radius: 0;
+  border: rgba(255, 255, 255, 1) 5px solid;
+  box-sizing: border-box;
+  font-family: 'BureauAP', sans-serif;
+  font-size: 1.2em;
+  color: white;
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  transition: all 0.15s ease-Out;
+}
+
+.action__btn__slide_efx {
+  background-color: #ff2513;
+  width: 100%;
+  height: 65px;
+  position: absolute;
+  z-index: 2;
+  left: -100%;
+  transition: all 0.15s ease-Out;
+  bottom: 0;
+  top: -2px;
+}
+.action__btn__slide_efx-green {
+  background-color: #3a962c;
+}
+
+.action__btn:hover .action__btn__slide_efx {
+  left: 0;
+}
+
+.action__btn:hover .action__btn__btn {
+  color: #cbf0ff;
+}
+
+.action {
+  margin-top: 2%;
+  position: relative;
+  display: inline-block;
+  width: calc(100% - 60px);
+}
+
+.quiz-isready-img {
+  width: 40vw;
+  position: absolute;
+  top: calc(50% - 20%);
+  left: calc(50% - 40vw);
+}
