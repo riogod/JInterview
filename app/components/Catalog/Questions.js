@@ -13,7 +13,6 @@ import {
 } from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-
 import DbServiceQuestions from '../../db/service/questions';
 
 const dbCategory = new DbServiceQuestions();
@@ -247,6 +246,7 @@ export default class Questions extends Component<Props> {
       <div className="question-list">
         <Table
           columns={columns}
+          rowKey="id"
           expandedRowRender={record => (
             <p
               style={{ margin: 0 }}

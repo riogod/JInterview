@@ -132,7 +132,7 @@ export default class DbServiceQuestions {
 
         return Promise.all(selectArray.filter(el => el != null))
           .then(result => {
-            return result;
+            return result.flat();
           })
           .catch(err => console.error(`Something wrong: ${err}`));
       })

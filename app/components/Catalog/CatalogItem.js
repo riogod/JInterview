@@ -1,6 +1,8 @@
 // @flow
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Button, Icon, Input, Popconfirm } from 'antd';
+import routes from '../../constants/routes';
 import DbServiceCategory from '../../db/service/categories';
 
 type Props = {
@@ -169,10 +171,12 @@ export default class Catalog extends Component<Props> {
           {item.descr}
         </a>
         <div className="catalog-item-actions">
-          <a href="#" className="flaticon-multimedia">
-            {' '}
-          </a>
-
+          <Link
+            data-tid="quizsession-start"
+            to={`${routes.QUIZSESSION}/${item.id}`}
+          >
+            <i className="flaticon-multimedia" />
+          </Link>
           <a
             href="#"
             className="flaticon-edit"

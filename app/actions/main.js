@@ -10,6 +10,7 @@ export const SET_CURRENT_CATEGORY = 'SET_CURRENT_CATEGORY';
 export const SET_SEARCH_PHRASE = 'SET_SEARCH_PHRASE';
 export const SET_CATALOG_HAVE_ITEMS = 'SET_CATALOG_HAVE_ITEMS';
 export const SET_CATALOG_HAVE_SUBS = 'SET_CATALOG_HAVE_SUBS';
+export const SET_QUIZSESSION_INIT = 'SET_QUIZSESSION_INIT';
 
 const dbSettings = new DbServiceSettings();
 
@@ -62,13 +63,17 @@ export function setInitSettings(appVar: string, appVal: boolean | number | strin
     dispatch({ type: appVar, payload: appVal });
   };
 }
+export function setQuizSessionInit(init_val: boolean) {
+  return (dispatch: Dispatch) => {
+    dispatch({ type: SET_QUIZSESSION_INIT, payload: init_val });
+  };
+}
 
 export function setAppSettings(appVar: string, appVal: boolean | number | string) {
 
   dbSettings
     .setSettingsValue(appVar, appVal)
     .then(res => {
-      console.log(`------->${res}`);
       return res;
     })
     .catch(err => console.log(`Something wrong: ${err}`));

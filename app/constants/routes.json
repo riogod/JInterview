@@ -1,5 +1,6 @@
 {
   "MAIN": "/",
   "STAT": "/stat",
+  "QUIZSESSION": "/quiz",
   "SETTINGS": "/settings"
 }
