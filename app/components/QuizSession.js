@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Modal, Button, Input, Rate } from 'antd';
 import DbServiceQuestions from '../db/service/questions';
 import Header from './header/Header';
 import InitLoading from '../containers/InitLoadingPage';
@@ -8,6 +9,7 @@ import shineImg from '../../resources/shine.svg';
 import routes from '../constants/routes';
 
 const dbCategory = new DbServiceQuestions();
+const { TextArea } = Input;
 
 type Props = {
   setCurrentPath: Function,
@@ -24,6 +26,7 @@ export default class QuizSession extends Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
+      showCompareModal: false,
       quizQuestionArr: [],
       isReady: false,
       isFinish: false,
@@ -99,6 +102,23 @@ export default class QuizSession extends Component<Props> {
       });
   };
 
+  startMainTimer() {
+    const { quizTimer } = this.state;
+    this.timer = setInterval(
+      () =>
+        this.setState(state => ({
+          ...state,
+          quizTimer: quizTimer + 1
+        })),
+      1000
+    );
+  }
+
+  stopTimer() {
+    clearInterval(this.timer);
+    console.log('stop');
+  }
+
   // Prepare screen
   isReadyRender = () => (
     <React.Fragment>
@@ -140,11 +160,158 @@ export default class QuizSession extends Component<Props> {
     </React.Fragment>
   );
 
+  compareAndRateAnswerShow = () => {
+    this.setState(state => ({
+      ...state,
+      showCompareModal: true
+    }));
+  };
+
+  changeAnswerState = inputAnswer => {
+    const { currentQuestion, quizQuestionArr } = this.state;
+
+    console.log('%c E:', 'color: red;', inputAnswer);
+
+    const quizQuestionsTmp = [...quizQuestionArr];
+
+    quizQuestionsTmp[currentQuestion] = {
+      ...quizQuestionsTmp[currentQuestion],
+      answer: {
+        ...quizQuestionsTmp[currentQuestion].answer,
+        userAnswer: inputAnswer
+      }
+    };
+
+    console.log('%c STATE:', 'color: green;', quizQuestionsTmp);
+
+    this.setState(state => ({
+      ...state,
+      quizQuestionArr: quizQuestionsTmp
+    }));
+  };
+
+  changeAnswerRate = value => {
+    const { currentQuestion, quizQuestionArr } = this.state;
+    const quizQuestionsTmp = [...quizQuestionArr];
+
+    quizQuestionsTmp[currentQuestion] = {
+      ...quizQuestionsTmp[currentQuestion],
+      answer: {
+        ...quizQuestionsTmp[currentQuestion].answer,
+        assessment: value,
+        userAnswer:
+          quizQuestionsTmp[currentQuestion].answer.userAnswer !== ''
+            ? quizQuestionsTmp[currentQuestion].answer.userAnswer
+            : ' '
+      }
+    };
+
+    this.setState(state => ({
+      ...state,
+      showCompareModal: false,
+      currentQuestion:
+        currentQuestion <= quizQuestionArr.length ? currentQuestion + 1 : null,
+      quizQuestionArr: quizQuestionsTmp
+    }));
+  };
+
   quizModuleRender = () => {
-    // const { isReady, currentQuestion, quizTimer, quizQuestionArr } = this.state;
+    const { currentQuestion, quizQuestionArr, showCompareModal } = this.state;
+    const { name, description, type, answerData, answer } = quizQuestionArr[
+      currentQuestion
+    ];
+
+    // console.log('%c AnswerData:', 'color:red;', JSON.parse(answerData));
+    const userAnswerRender = typeAnswer => {
+      switch (typeAnswer) {
+        case 'multi':
+          return (
+            <div>
+              {JSON.parse(answerData)
+                .sort(() => 0.5 - Math.random())
+                .map(el => el.text)}
+            </div>
+          );
+        case 'select':
+          return (
+            <div>
+              {JSON.parse(answerData)
+                .sort(() => 0.5 - Math.random())
+                .map(el => el.text)}
+            </div>
+          );
+        default:
+          return (
+            <React.Fragment>
+              <Modal
+                title="And now compare and rate it!"
+                visible={showCompareModal}
+                maskClosable={false}
+                width="900px"
+                footer={[
+                  <div className="answer-module-rate-container">
+                    Rate your answer:
+                    <Rate
+                      tooltips={[
+                        'terrible',
+                        'bad',
+                        'normal',
+                        'good',
+                        'wonderful'
+                      ]}
+                      value={0}
+                      className="answer-module-rate"
+                      onChange={this.changeAnswerRate}
+                    />
+                  </div>
+                ]}
+              >
+                <span className="answer-modal-title">Correct answer is:</span>
+                <div
+                  className="answer-modal-correct"
+                  dangerouslySetInnerHTML={{ __html: answerData }}
+                />
+                <span className="answer-modal-title">Your answer is:</span>
+                <div className="answer-modal-user">{answer.userAnswer}</div>
+              </Modal>
+              <TextArea
+                autosize={{ minRows: 4, maxRows: 15 }}
+                placeholder="Write here your answer..."
+                value={answer.userAnswer}
+                onChange={e => {
+                  this.changeAnswerState(e.target.value);
+                }}
+              />
+              <Button
+                type="primary"
+                size="large"
+                onClick={this.compareAndRateAnswerShow}
+              >
+                I&apos;am done
+              </Button>
+            </React.Fragment>
+          );
+      }
+    };
 
     return (
-      <React.Fragment>
+      <div className="quiz-containter">
+        <div className="question-module">
+          <div className="question-module-title">
+            #{currentQuestion + 1}) {name}
+          </div>
+          <div className="question-module-descr">
+            <p
+              dangerouslySetInnerHTML={{
+                __html: description
+              }}
+            />
+          </div>
+        </div>
+        <div className="question-module-answer-container">
+          <p className="question-module-answer-title">And your answer is:</p>
+          {userAnswerRender(type)}
+        </div>
         <a
           role="button"
           tabIndex={0}
@@ -159,7 +326,7 @@ export default class QuizSession extends Component<Props> {
         >
           NEXT
         </a>
-      </React.Fragment>
+      </div>
     );
   };
 

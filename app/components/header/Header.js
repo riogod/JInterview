@@ -6,7 +6,8 @@ import styles from './Header.scss';
 type Props = {
   menu: string,
   allQuestions: number,
-  currentQuestion: number
+  currentQuestion: number,
+  timer: number
 };
 type State = {};
 
@@ -49,11 +50,11 @@ export default class Header extends Component<Props, State> {
   };
 
   renderQuizData = () => {
-    const { allQuestions, currentQuestion } = this.props;
+    const { allQuestions, currentQuestion, timer } = this.props;
 
     return (
       <React.Fragment>
-        {currentQuestion + 1} / {allQuestions}
+        {currentQuestion + 1} / {allQuestions} - {timer}
       </React.Fragment>
     );
   };
