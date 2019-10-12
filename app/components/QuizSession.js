@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Modal, Button, Input, Rate } from 'antd';
+import { Modal, Button, Input, Rate, Checkbox, Radio } from 'antd';
 import DbServiceQuestions from '../db/service/questions';
 import Header from './header/Header';
 import InitLoading from '../containers/InitLoadingPage';
@@ -47,6 +47,7 @@ export default class QuizSession extends Component<Props> {
 
   componentDidUpdate(): void {
     const { quizSessionInit, loadedInit } = this.props;
+
     if (!quizSessionInit && loadedInit) {
       // console.log('!quizSessionInit && loadedInit');
       this.loadQuestionAndState();
@@ -74,20 +75,41 @@ export default class QuizSession extends Component<Props> {
         setQuizSessionInit(true);
         this.setState(state => ({
           ...state,
-          quizQuestionArr: res.map(val => ({
-            id: val.id,
-            parentId: val.parent_id,
-            name: val.question_name,
-            description: val.question_description,
-            type: val.question_type,
-            answerData: val.answer_data,
-            answer: {
-              userAnswer: '',
-              assessment: 0,
-              answerTimerStart: 0,
-              answerTimerStop: 0
-            }
-          }))
+          quizQuestionArr: res.map(val => {
+            const answerData =
+              val.question_type !== 'text'
+                ? JSON.parse(val.answer_data)
+                    .sort(() => 0.5 - Math.random())
+                    .map((el, idx) => ({
+                      selectedId: idx,
+                      isTrue: el.isTrue,
+                      text: el.text
+                    }))
+                : ' ';
+
+            const userAnswer =
+              val.question_type === 'multi'
+                ? answerData.map((el, idx) => ({
+                    selectedId: idx,
+                    selected: false,
+                    text: el.text
+                  }))
+                : ' ';
+            return {
+              id: val.id,
+              parentId: val.parent_id,
+              name: val.question_name,
+              description: val.question_description,
+              type: val.question_type,
+              answerData,
+              answer: {
+                userAnswer,
+                assessment: 0,
+                answerTimerStart: 0,
+                answerTimerStop: 0
+              }
+            };
+          })
         }));
         console.log(
           'quizQuestionArr',
@@ -215,30 +237,72 @@ export default class QuizSession extends Component<Props> {
     }));
   };
 
+  setQuestionMultiAnswer = (idx, value) => {
+    const { currentQuestion, quizQuestionArr } = this.state;
+    const quizQuestionsTmp = [...quizQuestionArr];
+
+    quizQuestionsTmp[currentQuestion].answer.userAnswer = quizQuestionsTmp[
+      currentQuestion
+    ].answer.userAnswer.map(el => {
+      return el.selectedId === idx ? { ...el, selected: value } : { ...el };
+    });
+
+    this.setState(state => ({
+      ...state,
+      quizQuestionArr: quizQuestionsTmp
+    }));
+  };
+
+  setQuestionSingleAnswer = idx => {
+    const { currentQuestion, quizQuestionArr } = this.state;
+    const quizQuestionsTmp = [...quizQuestionArr];
+
+    quizQuestionsTmp[currentQuestion].answer.userAnswer = idx;
+
+    this.setState(state => ({
+      ...state,
+      quizQuestionArr: quizQuestionsTmp
+    }));
+  };
+
   quizModuleRender = () => {
     const { currentQuestion, quizQuestionArr, showCompareModal } = this.state;
-    const { name, description, type, answerData, answer } = quizQuestionArr[
+    const { id, name, description, type, answerData, answer } = quizQuestionArr[
       currentQuestion
     ];
 
-    // console.log('%c AnswerData:', 'color:red;', JSON.parse(answerData));
     const userAnswerRender = typeAnswer => {
       switch (typeAnswer) {
         case 'multi':
           return (
             <div>
-              {JSON.parse(answerData)
-                .sort(() => 0.5 - Math.random())
-                .map(el => el.text)}
+              {answerData.map(el => (
+                <Checkbox
+                  key={`select${el.selectedId}`}
+                  onChange={value =>
+                    this.setQuestionMultiAnswer(
+                      el.selectedId,
+                      value.target.checked
+                    )
+                  }
+                >
+                  {el.text}
+                </Checkbox>
+              ))}
             </div>
           );
         case 'select':
           return (
-            <div>
-              {JSON.parse(answerData)
-                .sort(() => 0.5 - Math.random())
-                .map(el => el.text)}
-            </div>
+            <Radio.Group
+              defaultValue={0}
+              onChange={e => this.setQuestionSingleAnswer(e.target.value)}
+            >
+              {answerData.map(el => (
+                <Radio value={el.selectedId} key={`radio${el.selectedId}`}>
+                  {el.text}
+                </Radio>
+              ))}
+            </Radio.Group>
           );
         default:
           return (
@@ -247,11 +311,13 @@ export default class QuizSession extends Component<Props> {
                 title="And now compare and rate it!"
                 visible={showCompareModal}
                 maskClosable={false}
+                key={`didx${id}`}
                 width="900px"
                 footer={[
                   <div className="answer-module-rate-container">
                     Rate your answer:
                     <Rate
+                      key={`ridx${id}`}
                       tooltips={[
                         'terrible',
                         'bad',
@@ -272,7 +338,10 @@ export default class QuizSession extends Component<Props> {
                   dangerouslySetInnerHTML={{ __html: answerData }}
                 />
                 <span className="answer-modal-title">Your answer is:</span>
-                <div className="answer-modal-user">{answer.userAnswer}</div>
+                <div
+                  className="answer-modal-user"
+                  dangerouslySetInnerHTML={{ __html: answer.userAnswer }}
+                />
               </Modal>
               <TextArea
                 autosize={{ minRows: 4, maxRows: 15 }}
@@ -296,6 +365,20 @@ export default class QuizSession extends Component<Props> {
 
     return (
       <div className="quiz-containter">
+        <a
+          role="button"
+          tabIndex={0}
+          onKeyDown={() => {}}
+          className="action__btn__btn"
+          onClick={() =>
+            this.setState(state => ({
+              ...state,
+              currentQuestion: state.currentQuestion + 1
+            }))
+          }
+        >
+          NEXT
+        </a>
         <div className="question-module">
           <div className="question-module-title">
             #{currentQuestion + 1}) {name}
@@ -312,20 +395,6 @@ export default class QuizSession extends Component<Props> {
           <p className="question-module-answer-title">And your answer is:</p>
           {userAnswerRender(type)}
         </div>
-        <a
-          role="button"
-          tabIndex={0}
-          onKeyDown={() => {}}
-          className="action__btn__btn"
-          onClick={() =>
-            this.setState(state => ({
-              ...state,
-              currentQuestion: state.currentQuestion + 1
-            }))
-          }
-        >
-          NEXT
-        </a>
       </div>
     );
   };
