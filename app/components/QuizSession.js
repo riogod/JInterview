@@ -8,6 +8,10 @@ import InitLoading from '../containers/InitLoadingPage';
 import shineImg from '../../resources/shine.svg';
 import routes from '../constants/routes';
 
+// TODO: make a final screen
+
+// TODO: implement @next@ button in single & multi answer
+
 const dbCategory = new DbServiceQuestions();
 const { TextArea } = Input;
 
@@ -294,7 +298,7 @@ export default class QuizSession extends Component<Props> {
         case 'select':
           return (
             <Radio.Group
-              defaultValue={0}
+              defaultValue=""
               onChange={e => this.setQuestionSingleAnswer(e.target.value)}
             >
               {answerData.map(el => (
