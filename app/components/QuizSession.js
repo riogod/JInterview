@@ -12,6 +12,8 @@ import routes from '../constants/routes';
 
 // TODO: implement @next@ button in single & multi answer
 
+// TODO: if 0 questions in category
+
 const dbCategory = new DbServiceQuestions();
 const { TextArea } = Input;
 
@@ -44,7 +46,6 @@ export default class QuizSession extends Component<Props> {
     setCurrentPath('module-quizsession');
 
     if (!quizSessionInit && loadedInit) {
-      // console.log('!quizSessionInit && loadedInit');
       this.loadQuestionAndState();
     }
   }
@@ -53,7 +54,6 @@ export default class QuizSession extends Component<Props> {
     const { quizSessionInit, loadedInit } = this.props;
 
     if (!quizSessionInit && loadedInit) {
-      // console.log('!quizSessionInit && loadedInit');
       this.loadQuestionAndState();
     }
   }
@@ -108,6 +108,7 @@ export default class QuizSession extends Component<Props> {
               answerData,
               answer: {
                 userAnswer,
+                showResult: false,
                 assessment: 0,
                 answerTimerStart: 0,
                 answerTimerStop: 0
@@ -127,23 +128,6 @@ export default class QuizSession extends Component<Props> {
         console.log(e);
       });
   };
-
-  startMainTimer() {
-    const { quizTimer } = this.state;
-    this.timer = setInterval(
-      () =>
-        this.setState(state => ({
-          ...state,
-          quizTimer: quizTimer + 1
-        })),
-      1000
-    );
-  }
-
-  stopTimer() {
-    clearInterval(this.timer);
-    console.log('stop');
-  }
 
   // Prepare screen
   isReadyRender = () => (
@@ -185,6 +169,21 @@ export default class QuizSession extends Component<Props> {
       </div>
     </React.Fragment>
   );
+
+  isFinishRender = () => {
+    const { quizQuestionArr } = this.state;
+
+    const finalAssessment = quizQuestionArr.reduce((sum, val) => {
+      console.log('%c VALUE', 'color: lime', sum, val.answer.assessment);
+      return sum + val.answer.assessment;
+    }, 0);
+
+    return (
+      <React.Fragment>
+        <div>FINISH!!!! {finalAssessment / quizQuestionArr.length}</div>
+      </React.Fragment>
+    );
+  };
 
   compareAndRateAnswerShow = () => {
     this.setState(state => ({
@@ -269,8 +268,92 @@ export default class QuizSession extends Component<Props> {
     }));
   };
 
+  showResultGroup = () => {
+    const { currentQuestion, quizQuestionArr } = this.state;
+    const quizQuestionsTmp = [...quizQuestionArr];
+
+    if (quizQuestionsTmp[currentQuestion].answer.userAnswer !== ' ') {
+      quizQuestionsTmp[currentQuestion].answer.showResult = true;
+      this.setAssessment();
+
+      this.setState(state => ({
+        ...state,
+        quizQuestionArr: quizQuestionsTmp
+      }));
+    }
+  };
+
+  setAssessment = () => {
+    const { currentQuestion, quizQuestionArr } = this.state;
+    const quizQuestionsTmp = [...quizQuestionArr];
+    let questionAssessment;
+    let countCorrect = 0;
+    let countIncorrect = 0;
+    // let countIsTrue = 0;
+    let countAnswers = 0;
+
+    if (quizQuestionsTmp[currentQuestion].type === 'select') {
+      questionAssessment = quizQuestionsTmp[currentQuestion].answerData[
+        quizQuestionsTmp[currentQuestion].answer.userAnswer
+      ].isTrue
+        ? 5
+        : 1;
+    }
+
+    if (quizQuestionsTmp[currentQuestion].type === 'multi') {
+      const userAnswerData =
+        quizQuestionsTmp[currentQuestion].answer.userAnswer;
+      const { answerData } = quizQuestionsTmp[currentQuestion];
+
+      answerData.forEach((el, index) => {
+        // if (el.isTrue) {
+        //   countIsTrue += 1;
+        // }
+        if (userAnswerData[index].selected) {
+          countAnswers += 1;
+        }
+        if (el.isTrue && userAnswerData[index].selected) {
+          countCorrect += 1;
+        }
+        if (!el.isTrue && userAnswerData[index].selected) {
+          countIncorrect += 1;
+        }
+      });
+
+      if (countCorrect <= 0) {
+        questionAssessment = 1;
+      }
+      if (countCorrect <= countIncorrect && countCorrect === 0) {
+        questionAssessment = 2;
+      }
+      if (countCorrect <= countIncorrect && countCorrect !== 0) {
+        questionAssessment = 3;
+      }
+      if (countCorrect > countIncorrect) {
+        questionAssessment = 4;
+      }
+      if (countIncorrect <= 0) {
+        questionAssessment = 5;
+      }
+      if (countAnswers === answerData.length) {
+        questionAssessment = 1;
+      }
+      if (countAnswers === 0) {
+        questionAssessment = 1;
+      }
+    }
+
+    quizQuestionsTmp[currentQuestion].answer.assessment = questionAssessment;
+
+    this.setState(state => ({
+      ...state,
+      quizQuestionArr: quizQuestionsTmp
+    }));
+  };
+
   quizModuleRender = () => {
     const { currentQuestion, quizQuestionArr, showCompareModal } = this.state;
+
     const { id, name, description, type, answerData, answer } = quizQuestionArr[
       currentQuestion
     ];
@@ -280,33 +363,81 @@ export default class QuizSession extends Component<Props> {
         case 'multi':
           return (
             <div>
-              {answerData.map(el => (
-                <Checkbox
-                  key={`select${el.selectedId}`}
-                  onChange={value =>
-                    this.setQuestionMultiAnswer(
-                      el.selectedId,
-                      value.target.checked
-                    )
-                  }
-                >
-                  {el.text}
-                </Checkbox>
-              ))}
+              {answerData.map(el => {
+                return (
+                  <Checkbox
+                    key={`select${el.selectedId}`}
+                    disabled={answer.showResult}
+                    onChange={value =>
+                      this.setQuestionMultiAnswer(
+                        el.selectedId,
+                        value.target.checked
+                      )
+                    }
+                    className={`result-show-radio ${
+                      answer.showResult && el.isTrue ? 'answer-highlight' : ''
+                    }`}
+                  >
+                    {el.text}
+                  </Checkbox>
+                );
+              })}
+              <Button
+                type="primary"
+                size="large"
+                onClick={
+                  !answer.showResult
+                    ? this.showResultGroup
+                    : () => {
+                        this.setState(state => ({
+                          ...state,
+                          currentQuestion: state.currentQuestion + 1
+                        }));
+                      }
+                }
+              >
+                {!answer.showResult ? 'Show result' : 'Next question'}
+              </Button>
             </div>
           );
         case 'select':
           return (
-            <Radio.Group
-              defaultValue=""
-              onChange={e => this.setQuestionSingleAnswer(e.target.value)}
-            >
-              {answerData.map(el => (
-                <Radio value={el.selectedId} key={`radio${el.selectedId}`}>
-                  {el.text}
-                </Radio>
-              ))}
-            </Radio.Group>
+            <div>
+              <Radio.Group
+                defaultValue={-1}
+                key={`group${currentQuestion}`}
+                disabled={answer.showResult}
+                onChange={e => this.setQuestionSingleAnswer(e.target.value)}
+              >
+                {answerData.map(el => (
+                  <Radio
+                    value={el.selectedId}
+                    key={`radio${el.selectedId}`}
+                    className={`result-show-radio ${
+                      answer.showResult && el.isTrue ? 'answer-highlight' : ''
+                    }`}
+                  >
+                    {el.text}
+                  </Radio>
+                ))}
+              </Radio.Group>
+              <Button
+                type="primary"
+                size="large"
+                onClick={
+                  !answer.showResult
+                    ? this.showResultGroup
+                    : () => {
+                        this.setState(state => ({
+                          ...state,
+                          currentQuestion: state.currentQuestion + 1
+                        }));
+                      }
+                }
+              >
+                {!answer.showResult ? 'Show result' : 'Next question'}
+              </Button>
+            </div>
           );
         default:
           return (
@@ -315,7 +446,7 @@ export default class QuizSession extends Component<Props> {
                 title="And now compare and rate it!"
                 visible={showCompareModal}
                 maskClosable={false}
-                key={`didx${id}`}
+                key={`didx${currentQuestion}`}
                 width="900px"
                 footer={[
                   <div className="answer-module-rate-container">
@@ -405,7 +536,13 @@ export default class QuizSession extends Component<Props> {
 
   render() {
     const { loadedInit, quizSessionInit } = this.props;
-    const { isReady, currentQuestion, quizTimer, quizQuestionArr } = this.state;
+    const {
+      isReady,
+      isFinish,
+      currentQuestion,
+      quizTimer,
+      quizQuestionArr
+    } = this.state;
     const loadInitCheck = !loadedInit ? <InitLoading /> : null;
     if (quizSessionInit) {
       console.log('QUIZ PROPS:', this.props, this.state);
@@ -419,9 +556,15 @@ export default class QuizSession extends Component<Props> {
           allQuestions={quizQuestionArr.length}
           currentQuestion={currentQuestion}
           timer={quizTimer}
+          finish={currentQuestion >= quizQuestionArr.length && 'yes'}
         />
-        {!isReady && quizSessionInit ? this.isReadyRender() : null}
-        {isReady && quizSessionInit ? this.quizModuleRender() : null}
+        {!isReady && quizSessionInit && !isFinish ? this.isReadyRender() : null}
+        {isReady && quizSessionInit && currentQuestion < quizQuestionArr.length
+          ? this.quizModuleRender()
+          : null}
+        {isReady && quizSessionInit && currentQuestion >= quizQuestionArr.length
+          ? this.isFinishRender()
+          : null}
       </React.Fragment>
     );
   }

@@ -636,6 +636,23 @@ body {
   border-radius: 0;
 }
 
+//.result-show-radio {
+//
+//
+//
+//
+//
+//}
+
+.answer-highlight .ant-checkbox-disabled {
+  .ant-checkbox-disabled {
+    background-color: #91d5ff;
+  }
+}
+.answer-highlight .ant-checkbox-disabled + span {
+  color: #3a962c;
+}
+
 .module-addEdit {
   .ant-modal-body > div {
     margin-bottom: 20px;
