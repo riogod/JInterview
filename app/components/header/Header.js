@@ -7,7 +7,7 @@ type Props = {
   menu: string,
   allQuestions: number,
   currentQuestion: number,
-  timer: number
+  finish: boolean
 };
 type State = {};
 
@@ -50,11 +50,13 @@ export default class Header extends Component<Props, State> {
   };
 
   renderQuizData = () => {
-    const { allQuestions, currentQuestion, timer } = this.props;
+    const { allQuestions, currentQuestion, finish } = this.props;
 
     return (
       <React.Fragment>
-        {currentQuestion + 1} / {allQuestions} - {timer}
+        <div className="count-from">
+          {!finish && `${currentQuestion + 1} / ${allQuestions}`}
+        </div>
       </React.Fragment>
     );
   };

@@ -19,7 +19,7 @@ export default class Stat extends Component<Props> {
     return (
       <React.Fragment>
         <Header menu="module-stat" />
-        stat
+        Comming soon...
       </React.Fragment>
     );
   }

@@ -8,11 +8,11 @@ import InitLoading from '../containers/InitLoadingPage';
 import shineImg from '../../resources/shine.svg';
 import routes from '../constants/routes';
 
-// TODO: make a final screen
+// TODO: make a final screen ( summary total / summary per question)
 
-// TODO: implement @next@ button in single & multi answer
+// TODO: if 0 questions in category ( in category item if click on play - showing modal "No questions"
 
-// TODO: if 0 questions in category
+// TODO: make a timers for all/single question
 
 const dbCategory = new DbServiceQuestions();
 const { TextArea } = Input;
@@ -129,60 +129,22 @@ export default class QuizSession extends Component<Props> {
       });
   };
 
-  // Prepare screen
-  isReadyRender = () => (
-    <React.Fragment>
-      <div className="quiz-isready-img">
-        <img src={shineImg} alt="Shine" />
-      </div>
-      <div className="quiz-isready-title">
-        Are you ready to shine ?
-        <div className="action">
-          <div className="action__btn">
-            <div className="action__btn__slide_efx action__btn__slide_efx-green" />
-            <a
-              role="button"
-              tabIndex={0}
-              onKeyDown={() => {}}
-              className="action__btn__btn"
-              onClick={() =>
-                this.setState(state => ({ ...state, isReady: true }))
-              }
-            >
-              READY
-            </a>
-          </div>
-        </div>
-        <div className="action">
-          <div className="action__btn">
-            <div className="action__btn__slide_efx" />
-            <Link
-              href="#"
-              className="action__btn__btn"
-              data-tid="menuItem1"
-              to={routes.MAIN}
-            >
-              No
-            </Link>
-          </div>
-        </div>
-      </div>
-    </React.Fragment>
-  );
+  assessmentLetter = assessment => {
+    let result;
 
-  isFinishRender = () => {
-    const { quizQuestionArr } = this.state;
+    if (assessment > 4.5) {
+      result = 'S';
+    } else if (assessment > 3.8 && assessment <= 4.5) {
+      result = 'A';
+    } else if (assessment > 2.6 && assessment <= 3.8) {
+      result = 'B';
+    } else if (assessment > 1.5 && assessment <= 2.6) {
+      result = 'C';
+    } else {
+      result = 'D';
+    }
 
-    const finalAssessment = quizQuestionArr.reduce((sum, val) => {
-      console.log('%c VALUE', 'color: lime', sum, val.answer.assessment);
-      return sum + val.answer.assessment;
-    }, 0);
-
-    return (
-      <React.Fragment>
-        <div>FINISH!!!! {finalAssessment / quizQuestionArr.length}</div>
-      </React.Fragment>
-    );
+    return result;
   };
 
   compareAndRateAnswerShow = () => {
@@ -268,21 +230,6 @@ export default class QuizSession extends Component<Props> {
     }));
   };
 
-  showResultGroup = () => {
-    const { currentQuestion, quizQuestionArr } = this.state;
-    const quizQuestionsTmp = [...quizQuestionArr];
-
-    if (quizQuestionsTmp[currentQuestion].answer.userAnswer !== ' ') {
-      quizQuestionsTmp[currentQuestion].answer.showResult = true;
-      this.setAssessment();
-
-      this.setState(state => ({
-        ...state,
-        quizQuestionArr: quizQuestionsTmp
-      }));
-    }
-  };
-
   setAssessment = () => {
     const { currentQuestion, quizQuestionArr } = this.state;
     const quizQuestionsTmp = [...quizQuestionArr];
@@ -351,6 +298,62 @@ export default class QuizSession extends Component<Props> {
     }));
   };
 
+  showResultGroup = () => {
+    const { currentQuestion, quizQuestionArr } = this.state;
+    const quizQuestionsTmp = [...quizQuestionArr];
+
+    if (quizQuestionsTmp[currentQuestion].answer.userAnswer !== ' ') {
+      quizQuestionsTmp[currentQuestion].answer.showResult = true;
+      this.setAssessment();
+
+      this.setState(state => ({
+        ...state,
+        quizQuestionArr: quizQuestionsTmp
+      }));
+    }
+  };
+
+  // Prepare screen
+  isReadyRender = () => (
+    <React.Fragment>
+      <div className="quiz-isready-img">
+        <img src={shineImg} alt="Shine" />
+      </div>
+      <div className="quiz-isready-title">
+        Are you ready to shine ?
+        <div className="action">
+          <div className="action__btn">
+            <div className="action__btn__slide_efx action__btn__slide_efx-green" />
+            <a
+              role="button"
+              tabIndex={0}
+              onKeyDown={() => {}}
+              className="action__btn__btn"
+              onClick={() =>
+                this.setState(state => ({ ...state, isReady: true }))
+              }
+            >
+              READY
+            </a>
+          </div>
+        </div>
+        <div className="action">
+          <div className="action__btn">
+            <div className="action__btn__slide_efx" />
+            <Link
+              href="#"
+              className="action__btn__btn"
+              data-tid="menuItem1"
+              to={routes.MAIN}
+            >
+              No
+            </Link>
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+
   quizModuleRender = () => {
     const { currentQuestion, quizQuestionArr, showCompareModal } = this.state;
 
@@ -362,7 +365,7 @@ export default class QuizSession extends Component<Props> {
       switch (typeAnswer) {
         case 'multi':
           return (
-            <div>
+            <div className="quiz-checkboxgroup">
               {answerData.map(el => {
                 return (
                   <Checkbox
@@ -407,6 +410,7 @@ export default class QuizSession extends Component<Props> {
                 defaultValue={-1}
                 key={`group${currentQuestion}`}
                 disabled={answer.showResult}
+                className="quiz-radiogroup"
                 onChange={e => this.setQuestionSingleAnswer(e.target.value)}
               >
                 {answerData.map(el => (
@@ -449,7 +453,10 @@ export default class QuizSession extends Component<Props> {
                 key={`didx${currentQuestion}`}
                 width="900px"
                 footer={[
-                  <div className="answer-module-rate-container">
+                  <div
+                    key={`fidx${currentQuestion}`}
+                    className="answer-module-rate-container"
+                  >
                     Rate your answer:
                     <Rate
                       key={`ridx${id}`}
@@ -500,20 +507,6 @@ export default class QuizSession extends Component<Props> {
 
     return (
       <div className="quiz-containter">
-        <a
-          role="button"
-          tabIndex={0}
-          onKeyDown={() => {}}
-          className="action__btn__btn"
-          onClick={() =>
-            this.setState(state => ({
-              ...state,
-              currentQuestion: state.currentQuestion + 1
-            }))
-          }
-        >
-          NEXT
-        </a>
         <div className="question-module">
           <div className="question-module-title">
             #{currentQuestion + 1}) {name}
@@ -531,6 +524,42 @@ export default class QuizSession extends Component<Props> {
           {userAnswerRender(type)}
         </div>
       </div>
+    );
+  };
+
+  isFinishRender = () => {
+    const { quizQuestionArr } = this.state;
+
+    const finalAssessment = quizQuestionArr.reduce((sum, val) => {
+      console.log('%c VALUE', 'color: lime', sum, val.answer.assessment);
+      return sum + val.answer.assessment;
+    }, 0);
+
+    return (
+      <React.Fragment>
+        <div className="finish-container">
+          <div className="finish-title">
+            <div>You have been interviewed on:</div>
+            <div>
+              <div className="letter letter--big">
+                <div className="a">
+                  {this.assessmentLetter(
+                    finalAssessment / quizQuestionArr.length
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <Link
+            data-tid="menuItem1"
+            to={routes.MAIN}
+            className="ant-btn ant-btn-primary ant-btn-lg"
+          >
+            <span>FINISH</span>
+          </Link>
+        </div>
+      </React.Fragment>
     );
   };
 

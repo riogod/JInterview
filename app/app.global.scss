@@ -2,6 +2,8 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
+
+// TODO : Fonts to other file
 @import '~@fortawesome/fontawesome-free/css/all.css';
 
 @font-face {
@@ -401,6 +403,7 @@ body {
   box-sizing: border-box;
   margin-top: 30px;
   padding: 15px;
+  color: white;
 
   div {
     font-size: 18px;
@@ -652,6 +655,12 @@ body {
 .answer-highlight .ant-checkbox-disabled + span {
   color: #3a962c;
 }
+.answer-highlight .ant-radio-disabled + span {
+  color: #3a962c;
+}
+.answer-highlight .ant-radio-inner::after {
+  color: #3a962c;
+}
 
 .module-addEdit {
   .ant-modal-body > div {
@@ -893,4 +902,95 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 900;
   font-size: 22px;
+}
+
+.a {
+  color: #fff;
+  display: inline-block;
+  transition: 800ms all cubic-bezier(0.5, 1, 0.4, 2);
+  background: linear-gradient(to right, #ff8a00 0%, #da1b60 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke-width: 4px;
+  -webkit-text-stroke-color: #fff;
+}
+
+.letter {
+  font-family: 'Source Sans Pro', sans-serif;
+  transform: scale(1.2);
+  display: inline-block;
+  font-weight: bold;
+  margin-left: 40px;
+
+  &--big {
+    font-size: 10rem;
+  }
+
+  &:hover .a {
+    transform: rotateY(360deg) rotateX(0deg) scale(1.2);
+  }
+}
+
+.finish-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+
+  & > div:first-child {
+    text-shadow: 0 0 15px #000;
+  }
+}
+
+.finish-container {
+  height: calc(100% - 150px);
+  width: 98%;
+  box-sizing: border-box;
+  margin: 10px 15px 0 15px;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.count-from {
+  color: #fff;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  text-shadow: 0 0 15px #000;
+  margin-right: 30px;
+}
+
+.quiz-radiogroup {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-bottom: 20px;
+
+  label {
+    margin-left: 8px;
+    color: white;
+    margin-bottom: 8px;
+  }
+}
+
+.quiz-checkboxgroup {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+
+  label {
+    margin-left: 8px;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  button {
+    margin-top: 20px;
+  }
 }

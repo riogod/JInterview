@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Row, Col, Slider, Switch } from 'antd';
+import { Row, Col, Slider } from 'antd';
 import Header from './header/Header';
 import DbServiceSettings from '../db/service/settings';
 import InitLoadingPage from '../containers/InitLoadingPage';
@@ -33,7 +33,7 @@ export default class Settings extends Component<Props> {
     const { appSettings, loadedInit } = this.props;
     const itemDisabled = !loadedInit;
 
-    const { QUESTION_PER_QUIZSESSION, ALLOW_SUBDIR } = appSettings;
+    const { QUESTION_PER_QUIZSESSION } = appSettings;
 
     const loading = !loadedInit ? (
       <InitLoadingPage />
@@ -51,18 +51,18 @@ export default class Settings extends Component<Props> {
             />
           </Col>
         </Row>
-        <Row>
-          <Col span={12}>Включать вопросы из подкатегорий:</Col>
-          <Col span={12}>
-            <Switch
-              defaultChecked={ALLOW_SUBDIR}
-              onChange={val => {
-                console.log('Switched!!!!', val);
-                setAppSettings('ALLOW_SUBDIR', val);
-              }}
-            />
-          </Col>
-        </Row>
+        {/* <Row> */}
+        {/* <Col span={12}>Включать вопросы из подкатегорий:</Col> */}
+        {/* <Col span={12}> */}
+        {/* <Switch */}
+        {/* defaultChecked={ALLOW_SUBDIR} */}
+        {/* onChange={val => { */}
+        {/* console.log('Switched!!!!', val); */}
+        {/* setAppSettings('ALLOW_SUBDIR', val); */}
+        {/* }} */}
+        {/* /> */}
+        {/* </Col> */}
+        {/* </Row> */}
       </div>
     );
 
